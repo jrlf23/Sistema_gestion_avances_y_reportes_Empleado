@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { EmpleadoModule } from './Empleado/Empleado.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { EmpleadoModule } from './Empleado/Empleado.module';
       synchronize: true,
     }),
     EmpleadoModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

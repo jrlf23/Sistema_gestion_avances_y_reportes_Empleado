@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { EmpleadoModule } from './Empleado/Empleado.module';
 import { AuthModule } from './auth/auth.module';
 import { ReporteExternoModule } from './reporte-externo/reporte-externo.module';
+import { ReporteInternosModule } from './reportes-internos/reportes-internos.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ReporteExternoModule } from './reporte-externo/reporte-externo.module';
     EmpleadoModule,
     AuthModule,
     ReporteExternoModule,
+    ReporteInternosModule,
   ],
 })
 export class AppModule {}

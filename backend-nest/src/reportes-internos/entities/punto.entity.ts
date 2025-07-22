@@ -1,10 +1,16 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Reporte } from "./reporte.entity";
 
+export enum AreaEnum {
+  FRONTAL = 'frontal',
+  TRASERA = 'trasera',
+  SUPERIOR = 'superior',
+  IZQUIERDO = 'izquierdo',
+  DERECHO = 'derecho',
+}
 
 @Entity()
-export class Punto
-{
+export class Punto {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -14,8 +20,11 @@ export class Punto
     @Column('float')
     y: number;
 
-    @Column()
-    area: 'frontal' | 'trasera' | 'superior' | 'izquierdo' | 'derecho';
+    @Column({
+        type: 'enum',
+        enum: AreaEnum,
+    })
+    area: AreaEnum;
 
     @ManyToOne(() => Reporte, (reporte) => reporte.puntos)
     reporte: Reporte

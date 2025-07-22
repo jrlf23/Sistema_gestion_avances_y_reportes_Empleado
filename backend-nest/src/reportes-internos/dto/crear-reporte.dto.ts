@@ -1,125 +1,110 @@
-import { Type } from "class-transformer";
-import { IsArray, IsDateString, IsNumberString, IsOptional, IsString, ValidateNested } from "class-validator";
+import { IsArray, IsDateString, IsEnum, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+import { AreaEnum } from '../entities/punto.entity';
 
+class RepuestoDto {
+  @IsString()
+  nombre: string;
 
-class RepuestosDto {
-    @IsString()
-    nombre: string;
+  @IsNumber()
+  cantidad: number;
 
-    @IsNumberString()
-    cantidad: string;
-
-    @IsNumberString()
-    precio: string;
+  @IsNumber()
+  precio: number;
 }
 
 class PuntoDto {
-    @IsNumberString()
-    x: string;
+  @IsEnum(AreaEnum)
+  area: AreaEnum;
 
-    @IsNumberString()
-    y: string;
+  @IsNumber()
+  x: number;
+
+  @IsNumber()
+  y: number;
 }
 
-class BahiaItemRevisionDto {
-    @IsString()
-    nombre: string;
+class RevisionItemDto {
+  @IsString()
+  nombre: string;
 
-    @IsString()
-    lado: 'izquierdo' | 'derecho';
+  @IsString()
+  lado: 'izquierdo' | 'derecho';
+}
 
-    @IsNumberString()
-    bahia: string;
+class BahiaDto {
+  @IsNumber()
+  numero: number;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => RevisionItemDto)
+  items: RevisionItemDto[];
 }
 
 export class CrearReportDto {
-    @IsString()
-    cliente: string;
+  @IsString()
+  cliente: string;
 
-    @IsOptional()
-    @IsString()
-    direccion?: string;
+  @IsOptional()
+  @IsString()
+  direccion?: string;
 
-    @IsOptional()
-    @IsString()
-    color?: string;
+  @IsOptional()
+  @IsString()
+  color?: string;
 
-    @IsOptional()
-    @IsString()
-    logo?: string;
+  @IsOptional()
+  @IsString()
+  logo?: string;
 
-    @IsString()
-    placa: string;
+  @IsString()
+  placa: string;
 
-    @IsString()
-    marca: string;
+  @IsString()
+  marca: string;
 
-    @IsString()
-    tipo: string;
+  @IsString()
+  tipo: string;
 
-    @IsString()
-    equipo: string;
+  @IsString()
+  equipo: string;
 
-    @IsDateString()
-    fechaIngreso: string;
+  @IsDateString()
+  fechaIngreso: string;
 
-    @IsDateString()
-    fechaSalida: string;
+  @IsOptional()
+  @IsDateString()
+  fechaSalida?: string;
 
-    @IsString()
-    kilInicial: string;
+  @IsNumber()
+  kilInicial: number;
 
-    @IsString()
-    kilFinal: string;
+  @IsNumber()
+  kilFinal: number;
 
-    @IsString()
-    falla: string;
+  @IsString()
+  falla: string;
 
-    @IsString()
-    trabajoRealizado: string;
+  @IsString()
+  trabajoRealizado: string;
 
-    @IsArray()
-    @IsString({ each: true })
-    accesorios: string[];
+  @IsArray()
+  @IsString({ each: true })
+  accesorios: string[];
 
-    @ValidateNested({ each: true })
-    @Type(() => RepuestosDto)
-    repuestos: RepuestosDto[];
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => RepuestoDto)
+  repuestos: RepuestoDto[];
 
-    @ValidateNested({ each: true })
-    @Type(() => BahiaItemRevisionDto)
-    revisionesBahias: BahiaItemRevisionDto[];
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => PuntoDto)
+  puntos: PuntoDto[];
 
-    @IsOptional()
-    @IsString()
-    observacion?: string;
-
-    @IsOptional()
-    @IsString()
-    enderezar?: string;
-
-    @IsOptional()
-    @ValidateNested({ each: true })
-    @Type(() => PuntoDto)
-    puntosFrontal?: PuntoDto[];
-
-    @IsOptional()
-    @ValidateNested({ each: true })
-    @Type(() => PuntoDto)
-    puntosTrasera?: PuntoDto[];
-
-    @IsOptional()
-    @ValidateNested({ each: true })
-    @Type(() => PuntoDto)
-    puntosSuperior?: PuntoDto[];
-
-    @IsOptional()
-    @ValidateNested({ each: true })
-    @Type(() => PuntoDto)
-    puntosIzquierdo?: PuntoDto[];
-
-    @IsOptional()
-    @ValidateNested({ each: true })
-    @Type(() => PuntoDto)
-    puntosDerecho?: PuntoDto[];
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => BahiaDto)
+  bahias: BahiaDto[];
 }

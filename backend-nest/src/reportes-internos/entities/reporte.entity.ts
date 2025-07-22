@@ -40,10 +40,10 @@ export class Reporte {
     fechaSalida: string;
 
     @Column()
-    kilInicial: string;
+    kilInicial: number;
 
     @Column()
-    kilFinal: string;
+    kilFinal: number;
 
     @Column({ type: 'text' })
     falla: string;

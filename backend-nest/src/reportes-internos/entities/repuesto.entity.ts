@@ -10,11 +10,11 @@ export class Repuesto {
     @Column()
     nombre: string;
 
-    @Column()
-    cantidad: string;
+    @Column('int')
+    cantidad: number;
 
-    @Column()
-    precio: string;
+    @Column('float')
+    precio: number;
 
     @ManyToOne(() => Reporte, (reporte) => reporte.repuestos)
     reporte: Reporte;

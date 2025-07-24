@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import InteractiveTruck2 from "./Interactive_truck2";
 import axios from 'axios';
 
-const ReportInternalFailures3 = ({ formData, setFormData }) => {
+const ReportInternalFailures3 = () => {
     const [formData, setFormData] = useState({
         cliente: "",
         direccion: "",

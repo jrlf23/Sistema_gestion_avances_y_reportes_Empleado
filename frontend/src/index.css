@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 
-@theme {
+:root {
     --color-primary: #021071;
     --color-resaltador: #990324;
     --color-base: #FFECD1;

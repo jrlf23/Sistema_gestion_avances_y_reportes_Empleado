@@ -37,7 +37,7 @@ export const Signup_employee = () => {
         setMensaje("");
 
         try {
-            const response = await fetch("https://ez7weiqisc.execute-api.us-east-1.amazonaws.com/v1//users/employee/register", {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/usuario/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

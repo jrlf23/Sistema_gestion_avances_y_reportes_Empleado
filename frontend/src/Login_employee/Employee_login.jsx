@@ -28,7 +28,7 @@ export const Login_employee= () => {
         setMensaje('');
 
         try {
-            const response = await fetch('https://ez7weiqisc.execute-api.us-east-1.amazonaws.com/v1/login/employee', {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/usuario/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

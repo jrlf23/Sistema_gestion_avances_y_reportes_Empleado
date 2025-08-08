@@ -12,4 +12,10 @@ export class EmpleadoController {
     {
         return this.empleadoService.create(dto)
     }
+
+    @Post('login')
+    async login (@Body() body: {username: string; password: string})
+    {
+        return this.empleadoService.login(body.username, body.password);
+    }
 }

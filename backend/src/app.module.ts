@@ -5,6 +5,7 @@ import { EmpleadoModule } from './Empleado/Empleado.module';
 import { AuthModule } from './auth/auth.module';
 import { ReporteExternoModule } from './reporte-externo/reporte-externo.module';
 import { ReporteInternosModule } from './reportes-internos/reportes-internos.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [

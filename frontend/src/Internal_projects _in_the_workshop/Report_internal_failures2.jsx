@@ -9,6 +9,14 @@ const Report_internal_failures2 = ({
 }) => {
   const navigate = useNavigate();
 
+  formData = {
+    accesorios: [],
+    herramientas: [],
+    costos: {},
+    ...formData
+  }
+
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -81,12 +89,18 @@ const Report_internal_failures2 = ({
       return;
     }
 
+    setFormData(prev => ({
+      ...prev,
+      ReportInternalFailures2: formData // 🔹 guardamos en la clave correcta
+    }));
+
     if (onNext) {
-      onNext(); // Paso al siguiente
+      onNext();
     } else {
       navigate("/ReportInternalFailures3");
     }
   };
+
 
   const handleAccessoryChange = (e) => {
     const { value, checked } = e.target;

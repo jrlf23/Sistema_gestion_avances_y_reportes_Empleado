@@ -2,45 +2,74 @@ import React, { useState } from "react";
 import ReportInternalFailures1 from "./Report_internal_failures1";
 import ReportInternalFailures2 from "./Report_internal_failures2";
 import ReportInternalFailures3 from "./Report_internal_failures3";
-import { data } from "react-router";
 
 export default function InternalReportsWizard() {
-    const [step, setStep] = useState(1);
-    const [reportData, setReportData] = useState({
-        ReportInternalFailures1: {},
-        ReportInternalFailures2: {},
-        ReportInternalFailures3: {}
-    });
+  const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({});
 
-    const handleNext = (data) => {
-        setReportData((prev) => ({ ...prev, [`reporte${step}`]: data }));
-        setStep(step + 1);
-    };
+  const handleNext = () => {
+    setStep((prev) => prev + 1);
+  };
 
-    const handleSubmit = async (data) => {
-        const finalData =
+  // Para que cada paso actualice sin borrar lo anterior
+  const updateFormData = (newData) => {
+    setFormData((prev) => ({
+      ...prev,
+      ...newData,
+    }));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/reportes-internos/full`,
         {
-            ...reportData, ReportInternalFailures3: data
-        };
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
 
-        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/reportes-internos/full`,
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(finalData)
-            }
-        );
+      if (!res.ok) throw new Error("Error al enviar el reporte");
 
-        const json = await res.json();
-        console.log(json);
-        alert("Reporte enviado correctamente");
-    };
+      const json = await res.json();
+      console.log("Respuesta del backend:", json);
+      alert("Reporte enviado correctamente");
+    } catch (error) {
+      console.error(error);
+      alert("Hubo un error al enviar el reporte");
+    }
+  };
 
-    return (
+  return (
     <>
-      {step === 1 && <ReportInternalFailures1 onNext={handleNext} />}
-      {step === 2 && <ReportInternalFailures2 onNext={handleNext} />}
-      {step === 3 && <ReportInternalFailures3 onNext={handleSubmit} />}
+      {step === 1 && (
+        <ReportInternalFailures1
+          formData={formData.ReportInternalFailures1 || {}}
+          setFormData={(data) =>
+            updateFormData({ ReportInternalFailures1: data })
+          }
+          onNext={handleNext}
+        />
+      )}
+      {step === 2 && (
+        <ReportInternalFailures2
+          formData={formData.ReportInternalFailures2 || {}}
+          setFormData={(data) =>
+            updateFormData({ ReportInternalFailures2: data })
+          }
+          onNext={handleNext}
+        />
+      )}
+      {step === 3 && (
+        <ReportInternalFailures3
+          formData={formData.ReportInternalFailures3 || {}}
+          setFormData={(data) =>
+            updateFormData({ ReportInternalFailures3: data })
+          }
+          onSubmit={handleSubmit}
+        />
+      )}
     </>
   );
 }

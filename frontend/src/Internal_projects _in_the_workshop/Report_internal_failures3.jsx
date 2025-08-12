@@ -1,37 +1,7 @@
 import React, { useState } from "react";
 import InteractiveTruck2 from "./Interactive_truck2";
-import axios from 'axios';
 
-const ReportInternalFailures3 = () => {
-    const [formData, setFormData] = useState({
-        cliente: "",
-        direccion: "",
-        color: "",
-        logo: "",
-        placa: "",
-        marca: "",
-        tipo: "",
-        equipo: "",
-        fechaIngreso: "",
-        fechaSalida: "",
-        kilInicial: "",
-        kilFinal: "",
-        falla: "",
-        trabajoRealizado: "",
-        accesorios: [],
-        repuestos: [{ nombre: "", cantidad: "", precio: "" }],
-    });
-
-    const [errors, setErrors] = useState({});
-    const [revisionData, setRevisionData] = useState(
-        [1, 2, 3, 4, 5].map(() => ({
-            izquierdo: itemsRevision.reduce((acc, item) => ({ ...acc, [item]: false }), {}),
-            derecho: itemsRevision.reduce((acc, item) => ({ ...acc, [item]: false }), {})
-        }))
-    );
-    const [observacion, setObservacion] = useState("");
-    const [enderezar, setEnderezar] = useState("");
-
+export default function ReportInternalFailures3({ formData, setFormData, onNext }) {
     const accesoriosList = [
         "Pescantes", "Plataformas", "Porta cono", "Tapon tanque",
         "Porta llanta", "Aparta cable"
@@ -44,37 +14,69 @@ const ReportInternalFailures3 = () => {
         "Resorte", "Estabilizador"
     ];
 
+    const [localData, setLocalData] = useState({
+        cliente: formData.cliente || "",
+        direccion: formData.direccion || "",
+        color: formData.color || "",
+        logo: formData.logo || "",
+        placa: formData.placa || "",
+        marca: formData.marca || "",
+        tipo: formData.tipo || "",
+        equipo: formData.equipo || "",
+        fechaIngreso: formData.fechaIngreso || "",
+        fechaSalida: formData.fechaSalida || "",
+        kilInicial: formData.kilInicial || "",
+        kilFinal: formData.kilFinal || "",
+        falla: formData.falla || "",
+        trabajoRealizado: formData.trabajoRealizado || "",
+        accesorios: formData.accesorios || [],
+        repuestos: formData.repuestos || [{ nombre: "", cantidad: "", precio: "" }],
+        revisionData: formData.revisionData || [1, 2, 3, 4, 5].map(() => ({
+            izquierdo: itemsRevision.reduce((acc, item) => ({ ...acc, [item]: false }), {}),
+            derecho: itemsRevision.reduce((acc, item) => ({ ...acc, [item]: false }), {})
+        })),
+        observacion: formData.observacion || "",
+        enderezar: formData.enderezar || ""
+    });
+
+    const [errors, setErrors] = useState({});
+
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-
         if (name === "accesorios") {
             if (checked) {
-                setFormData((prev) => ({
+                setLocalData((prev) => ({
                     ...prev,
                     accesorios: [...prev.accesorios, value],
                 }));
             } else {
-                setFormData((prev) => ({
+                setLocalData((prev) => ({
                     ...prev,
                     accesorios: prev.accesorios.filter((item) => item !== value),
                 }));
             }
         } else {
-            setFormData((prev) => ({ ...prev, [name]: value }));
+            setLocalData((prev) => ({ ...prev, [name]: value }));
         }
     };
 
     const handleRepuestoChange = (index, field, value) => {
-        const newRepuestos = [...formData.repuestos];
+        const newRepuestos = [...localData.repuestos];
         newRepuestos[index][field] = value;
-        setFormData({ ...formData, repuestos: newRepuestos });
+        setLocalData({ ...localData, repuestos: newRepuestos });
     };
 
     const agregarRepuesto = () => {
-        setFormData((prev) => ({
+        setLocalData((prev) => ({
             ...prev,
             repuestos: [...prev.repuestos, { nombre: "", cantidad: "", precio: "" }],
         }));
+    };
+
+    const toggleRevisionItem = (bahiaIndex, lado, item) => {
+        const newData = [...localData.revisionData];
+        newData[bahiaIndex][lado][item] = !newData[bahiaIndex][lado][item];
+        setLocalData({ ...localData, revisionData: newData });
     };
 
     const validarCampos = () => {
@@ -82,49 +84,30 @@ const ReportInternalFailures3 = () => {
         const camposObligatorios = [
             "cliente", "placa", "marca", "tipo", "equipo", "kilInicial", "kilFinal", "falla", "trabajoRealizado"
         ];
-
         camposObligatorios.forEach((campo) => {
-            if (!formData[campo] || formData[campo].trim() === "") {
+            if (!localData[campo] || localData[campo].trim() === "") {
                 nuevosErrores[campo] = "Este campo es obligatorio.";
             }
         });
-
-        if (formData.accesorios.length === 0) {
+        if (localData.accesorios.length === 0) {
             nuevosErrores.accesorios = "Seleccione al menos un accesorio.";
         }
-
         setErrors(nuevosErrores);
         return Object.keys(nuevosErrores).length === 0;
     };
 
-    const toggleRevisionItem = (bahiaIndex, lado, item) => {
-        const newData = [...revisionData];
-        newData[bahiaIndex][lado][item] = !newData[bahiaIndex][lado][item];
-        setRevisionData(newData);
-    };
-
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         if (!validarCampos()) return;
 
-        try {
-            const response = await axios.post('http://localhost:3000/reportes-internos', {
-                ...formData,
-                revisionData,
-                observacion,
-                enderezar
-            });
+        // Guardar en estado global
+        setFormData(prev => ({
+            ...prev,
+            ReportInternalFailures3: localData
+        }));
 
-            if (response.status === 201 || response.status === 200) {
-                alert('¡Reporte enviado con éxito!');
-                console.log('Respuesta del backend:', response.data);
-            } else {
-                alert('Hubo un error al enviar el reporte.');
-            }
-        } catch (error) {
-            console.error('Error al enviar el reporte:', error);
-            alert('Error al conectar con el backend.');
-        }
+        // Llamar al siguiente paso / submit final
+        onNext(localData);
     };
 
     return (
@@ -143,7 +126,7 @@ const ReportInternalFailures3 = () => {
                             type={field.includes("fecha") ? "date" : "text"}
                             name={field}
                             placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-                            value={formData[field]}
+                            value={localData[field]}
                             onChange={handleChange}
                             className={`border p-2 rounded w-full ${errors[field] ? "border-red-500" : ""}`}
                         />
@@ -156,7 +139,7 @@ const ReportInternalFailures3 = () => {
             <section>
                 <textarea
                     name="falla"
-                    value={formData.falla}
+                    value={localData.falla}
                     onChange={handleChange}
                     placeholder="Falla reportada"
                     className={`w-full p-2 border rounded mb-2 ${errors.falla ? "border-red-500" : ""}`}
@@ -165,7 +148,7 @@ const ReportInternalFailures3 = () => {
 
                 <textarea
                     name="trabajoRealizado"
-                    value={formData.trabajoRealizado}
+                    value={localData.trabajoRealizado}
                     onChange={handleChange}
                     placeholder="Trabajo realizado"
                     className={`w-full p-2 border rounded ${errors.trabajoRealizado ? "border-red-500" : ""}`}
@@ -183,7 +166,7 @@ const ReportInternalFailures3 = () => {
                                 type="checkbox"
                                 name="accesorios"
                                 value={item}
-                                checked={formData.accesorios.includes(item)}
+                                checked={localData.accesorios.includes(item)}
                                 onChange={handleChange}
                             />
                             <span>{item}</span>
@@ -196,7 +179,7 @@ const ReportInternalFailures3 = () => {
             {/* Repuestos */}
             <section>
                 <h2 className="font-semibold mb-2">Detalle de Repuestos</h2>
-                {formData.repuestos.map((repuesto, index) => (
+                {localData.repuestos.map((repuesto, index) => (
                     <div key={index} className="grid grid-cols-3 gap-2 mb-2">
                         <input
                             type="text"
@@ -252,7 +235,7 @@ const ReportInternalFailures3 = () => {
                                             <label key={item} className="flex items-center gap-2">
                                                 <input
                                                     type="checkbox"
-                                                    checked={revisionData[i][lado][item]}
+                                                    checked={localData.revisionData[i][lado][item]}
                                                     onChange={() => toggleRevisionItem(i, lado, item)}
                                                 />
                                                 <span>{item}</span>
@@ -267,14 +250,14 @@ const ReportInternalFailures3 = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <textarea
                         placeholder="Observación"
-                        value={observacion}
-                        onChange={(e) => setObservacion(e.target.value)}
+                        value={localData.observacion}
+                        onChange={(e) => setLocalData(prev => ({ ...prev, observacion: e.target.value }))}
                         className="border rounded p-2 w-full"
                     />
                     <textarea
                         placeholder="Enderezar"
-                        value={enderezar}
-                        onChange={(e) => setEnderezar(e.target.value)}
+                        value={localData.enderezar}
+                        onChange={(e) => setLocalData(prev => ({ ...prev, enderezar: e.target.value }))}
                         className="border rounded p-2 w-full"
                     />
                 </div>
@@ -284,10 +267,8 @@ const ReportInternalFailures3 = () => {
                 type="submit"
                 className="w-full py-2 bg-green-600 text-white rounded font-semibold hover:bg-green-700"
             >
-                Enviar Reporte
+                Finalizar
             </button>
         </form>
     );
-};
-
-export default ReportInternalFailures3;
+}

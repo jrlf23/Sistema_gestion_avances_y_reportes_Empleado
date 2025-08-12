@@ -57,6 +57,40 @@ export class Reporte {
     @Column({ type: 'text', nullable: true })
     enderezar: string;
 
+    // 🔹 Nuevos campos para el flujo de 3 pasos
+    @Column({ nullable: true })
+    hora_inicio: string;
+
+    @Column({ nullable: true })
+    hora_fin: string;
+
+    @Column({ nullable: true })
+    horas_km: string;
+
+    @Column({ nullable: true })
+    sistema: string;
+
+    @Column({ type: 'text', nullable: true })
+    detalles_sistema: string;
+
+    @Column({ type: 'text', nullable: true })
+    detalles_falla: string;
+
+    @Column({ nullable: true })
+    fuente_reporte: string;
+
+    @Column({ type: 'text', nullable: true })
+    acciones_tomadas: string;
+
+    @Column({ type: 'text', nullable: true })
+    causa_raiz: string;
+
+    @Column({ type: 'text', nullable: true })
+    acciones_preventivas: string;
+
+    @Column({ type: 'text', nullable: true })
+    observaciones_finales: string;
+
     @CreateDateColumn()
     fechaCreacion: Date;
 

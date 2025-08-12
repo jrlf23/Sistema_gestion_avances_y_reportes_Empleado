@@ -107,4 +107,48 @@ export class CrearReportDto {
   @ValidateNested({ each: true })
   @Type(() => BahiaDto)
   bahias: BahiaDto[];
+
+  @IsOptional()
+  @IsString()
+  hora_inicio?: string;
+
+  @IsOptional()
+  @IsString()
+  hora_fin?: string;
+
+  @IsOptional()
+  @IsString()
+  horas_km?: string;
+
+  @IsOptional()
+  @IsString()
+  sistema?: string;
+
+  @IsOptional()
+  @IsString()
+  detalles_sistema?: string;
+
+  @IsOptional()
+  @IsString()
+  detalles_falla?: string;
+
+  @IsOptional()
+  @IsString()
+  fuente_reporte?: string;
+
+  @IsOptional()
+  @IsString()
+  acciones_tomadas?: string;
+
+  @IsOptional()
+  @IsString()
+  causa_raiz?: string;
+
+  @IsOptional()
+  @IsString()
+  acciones_preventivas?: string;
+
+  @IsOptional()
+  @IsString()
+  observaciones_finales?: string;
 }

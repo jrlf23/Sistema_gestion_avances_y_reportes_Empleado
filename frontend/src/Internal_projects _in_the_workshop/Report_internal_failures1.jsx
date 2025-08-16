@@ -1,10 +1,7 @@
 import React, { useState } from "react";
 
-export default function Report_internal_failures1({ formData= {}, setFormData, onNext }) {
-  
-  console.log("setFormData en paso 1:", setFormData);
+export default function Report_internal_failures1({ formData = {}, onSave, onNext }) {
 
-  
   const [localData, setLocalData] = useState({
     placa: formData.placa || "",
     equipo: formData.equipo || "",
@@ -66,16 +63,14 @@ export default function Report_internal_failures1({ formData= {}, setFormData, o
   };
 
   const handleSubmit = (e) => {
-  e.preventDefault();
-  if (!validateForm()) return;
+    e.preventDefault();
+    if (!validateForm()) return;
 
-  setFormData((prev) => ({
-    ...prev,
-    ReportInternalFailures1: localData // 🔹 Guardar en la clave correcta
-  }));
+    onSave(localData);
 
-  onNext();
-};
+    onNext();
+  };
+
 
 
   return (

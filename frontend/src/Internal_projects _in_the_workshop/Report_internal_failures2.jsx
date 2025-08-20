@@ -2,7 +2,7 @@ import React from "react";
 import InteractiveTruck from "./Interactive_truck";
 import { useNavigate } from "react-router-dom";
 
-const Report_internal_failures2 = ({
+const ReportInternalFailures2 = ({
   formData = {},
   setFormData,
   onNext,
@@ -340,4 +340,4 @@ const Report_internal_failures2 = ({
   );
 };
 
-export default Report_internal_failures2;
+export default ReportInternalFailures2;

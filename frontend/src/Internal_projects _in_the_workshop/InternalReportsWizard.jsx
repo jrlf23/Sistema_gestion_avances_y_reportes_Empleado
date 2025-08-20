@@ -46,28 +46,22 @@ export default function InternalReportsWizard() {
       {step === 1 && (
         <ReportInternalFailures1
           formData={formData.ReportInternalFailures1 || {}}
-          onSave={(data) => {
-            console.log("Guardando datos de paso 1:", data);
-            updateFormData({ ReportInternalFailures1: data });
-          }}
+          onSave={(data) => updateFormData({ ReportInternalFailures1: data })}
           onNext={handleNext}
         />
+
       )}
       {step === 2 && (
         <ReportInternalFailures2
           formData={formData.ReportInternalFailures2 || {}}
-          setFormData={(data) =>
-            updateFormData({ ReportInternalFailures2: data })
-          }
+          onSave={(data) => updateFormData({ ReportInternalFailures2: data })}
           onNext={handleNext}
         />
       )}
       {step === 3 && (
         <ReportInternalFailures3
           formData={formData.ReportInternalFailures3 || {}}
-          setFormData={(data) =>
-            updateFormData({ ReportInternalFailures3: data })
-          }
+          onSave={(data) => updateFormData({ ReportInternalFailures3: data })}
           onSubmit={handleSubmit}
         />
       )}

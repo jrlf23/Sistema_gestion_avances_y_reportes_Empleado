@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function Report_internal_failures1({ formData = {}, onSave, onNext }) {
+export default function ReportInternalFailures1({ formData = {}, onSave, onNext }) {
 
   const [localData, setLocalData] = useState({
     placa: formData.placa || "",

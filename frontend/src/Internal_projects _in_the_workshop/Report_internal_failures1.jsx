@@ -2,6 +2,9 @@ import React, { useState } from "react";
 
 export default function ReportInternalFailures1({ formData = {}, onSave, onNext }) {
 
+  console.log("Props en ReportInternalFailures1:", { formData, onSave, onNext });
+
+
   const [localData, setLocalData] = useState({
     placa: formData.placa || "",
     equipo: formData.equipo || "",

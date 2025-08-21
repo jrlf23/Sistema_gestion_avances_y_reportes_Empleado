@@ -7,6 +7,7 @@ import ReportExternalFailures from './External_projects/Report_external_failures
 import ReportInternalFailures1 from './Internal_projects _in_the_workshop/Report_internal_failures1';
 import ReportInternalFailures2 from './Internal_projects _in_the_workshop/Report_internal_failures2';
 import ReportInternalFailures3 from './Internal_projects _in_the_workshop/Report_internal_failures3';
+import InternalReportsWizard from './Internal_projects _in_the_workshop/InternalReportsWizard';
 import './index.css';
 
 // Layout para empleados
@@ -27,9 +28,7 @@ const App = () => {
           <Route path="/" element={<Login_employee />} />
           <Route path="/Signup_employee" element={<Signup_employee />} />
           <Route path="/ReportExternalFailures" element={<ReportExternalFailures />} />
-          <Route path="/ReportInternalFailures1" element={<ReportInternalFailures1 />} />
-          <Route path="/ReportInternalFailures2" element={<ReportInternalFailures2 />} />
-          <Route path="/ReportInternalFailures3" element={<ReportInternalFailures3 />} />
+          <Route path="/ReportInternalFailures" element={<InternalReportsWizard />} />
         </Route>
       </Routes>
     </BrowserRouter>

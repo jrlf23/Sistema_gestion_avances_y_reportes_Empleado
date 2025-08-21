@@ -40,7 +40,7 @@ export const Header_employee = () => {
                     Proyectos externos
                 </NavLink>
 
-                <NavLink to="/ReportInternalFailures1" className={({ isActive }) => isActive ? "text-primary font-bold" : "text-black"}>
+                <NavLink to="/ReportInternalFailures" className={({ isActive }) => isActive ? "text-primary font-bold" : "text-black"}>
                     Proyectos internos en el taller
                 </NavLink>
 

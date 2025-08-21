@@ -11,7 +11,11 @@ export default function InternalReportsWizard() {
     setStep((prev) => prev + 1);
   };
 
-  // Para que cada paso actualice sin borrar lo anterior
+  const handleBack = () => {
+    setStep((prev) => prev - 1);
+  };
+
+  
   const updateFormData = (newData) => {
     setFormData((prev) => ({
       ...prev,
@@ -45,24 +49,25 @@ export default function InternalReportsWizard() {
     <>
       {step === 1 && (
         <ReportInternalFailures1
-          formData={formData.ReportInternalFailures1 || {}}
-          onSave={(data) => updateFormData({ ReportInternalFailures1: data })}
+          formData={formData}
+          onSave={updateFormData}
           onNext={handleNext}
         />
-
       )}
       {step === 2 && (
         <ReportInternalFailures2
-          formData={formData.ReportInternalFailures2 || {}}
-          onSave={(data) => updateFormData({ ReportInternalFailures2: data })}
+          formData={formData}
+          onSave={updateFormData}
           onNext={handleNext}
+          onBack={handleBack}
         />
       )}
       {step === 3 && (
         <ReportInternalFailures3
-          formData={formData.ReportInternalFailures3 || {}}
-          onSave={(data) => updateFormData({ ReportInternalFailures3: data })}
+          formData={formData}
+          onSave={updateFormData}
           onSubmit={handleSubmit}
+          onBack={handleBack}
         />
       )}
     </>

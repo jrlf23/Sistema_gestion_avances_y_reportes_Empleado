@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import InteractiveTruck2 from "./Interactive_truck2";
 
-export default function ReportInternalFailures3({ formData, setFormData, onNext }) {
+export default function ReportInternalFailures3({ formData, onSubmit }) {
     const accesoriosList = [
         "Pescantes", "Plataformas", "Porta cono", "Tapon tanque",
         "Porta llanta", "Aparta cable"
@@ -100,14 +100,7 @@ export default function ReportInternalFailures3({ formData, setFormData, onNext 
         e.preventDefault();
         if (!validarCampos()) return;
 
-        // Guardar en estado global
-        setFormData(prev => ({
-            ...prev,
-            ReportInternalFailures3: localData
-        }));
-
-        // Llamar al siguiente paso / submit final
-        onNext(localData);
+        onSubmit(localData);
     };
 
     return (

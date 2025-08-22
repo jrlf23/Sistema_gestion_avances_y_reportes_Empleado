@@ -51,7 +51,7 @@ export default function InternalReportsWizard() {
         <ReportInternalFailures1
           formData={formData}
           onSave={updateFormData}
-          onNext={handleNext}
+          onNext={handleNext}x
         />
       )}
       {step === 2 && (

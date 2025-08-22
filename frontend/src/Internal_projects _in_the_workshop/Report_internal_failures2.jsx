@@ -4,26 +4,27 @@ import { useNavigate } from "react-router-dom";
 
 const ReportInternalFailures2 = ({
   formData = {},
-  setFormData,
+  onSave,
   onNext,
+  onBack
 }) => {
   const navigate = useNavigate();
 
-  formData = {
+  const safeFormData = {
     accesorios: [],
     herramientas: [],
     costos: {},
-    ...formData
-  }
+    ...formData,
+  };
 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
     // Si el campo pertenece a "costos"
-    if (formData.costos && Object.keys(formData.costos).includes(name)) {
+     if (safeFormData.costos && Object.keys(safeFormData.costos).includes(name)) {
       const updatedCostos = {
-        ...formData.costos,
+        ...safeFormData.costos,
         [name]: value,
       };
 
@@ -34,14 +35,14 @@ const ReportInternalFailures2 = ({
 
       updatedCostos.totalGeneral = total.toFixed(2);
 
-      setFormData({
-        ...formData,
+      onSave({
+        ...safeFormData,
         costos: updatedCostos,
       });
     } else {
       // Campos generales
-      setFormData({
-        ...formData,
+       onSave({
+        ...safeFormData,
         [name]: value,
       });
     }
@@ -52,13 +53,8 @@ const ReportInternalFailures2 = ({
       "fecha",
       "equipo",
       "placa",
-      "tipo",
-      "marca",
-      "depto",
-      "kilometraje",
-      "combustible",
     ];
-    const emptyFields = requiredFields.filter((field) => !formData[field]);
+    const emptyFields = requiredFields.filter((field) => !safeFormData[field]);
     const errors = [];
 
     if (emptyFields.length > 0) {
@@ -67,15 +63,15 @@ const ReportInternalFailures2 = ({
       );
     }
 
-    if (!formData.trabajoSolicitado?.trim()) {
+    if (!safeFormData.trabajoSolicitado?.trim()) {
       errors.push("El campo 'Trabajo Solicitado' es obligatorio.");
     }
 
-    if (!formData.accesorios || formData.accesorios.length === 0) {
+    if (!safeFormData.accesorios || safeFormData.accesorios.length === 0) {
       errors.push("Debes seleccionar al menos un accesorio.");
     }
 
-    if (!formData.herramientas || formData.herramientas.length === 0) {
+    if (!safeFormData.herramientas || safeFormData.herramientas.length === 0) {
       errors.push("Debes seleccionar al menos una herramienta.");
     }
 
@@ -89,10 +85,7 @@ const ReportInternalFailures2 = ({
       return;
     }
 
-    setFormData(prev => ({
-      ...prev,
-      ReportInternalFailures2: formData // 🔹 guardamos en la clave correcta
-    }));
+    onSave({ ReportInternalFailures2: safeFormData });
 
     if (onNext) {
       onNext();
@@ -104,7 +97,9 @@ const ReportInternalFailures2 = ({
 
   const handleAccessoryChange = (e) => {
     const { value, checked } = e.target;
-    let updatedAccesorios = formData.accesorios ? [...formData.accesorios] : [];
+    let updatedAccesorios = safeFormData.accesorios
+      ? [...safeFormData.accesorios]
+      : [];
 
     if (checked) {
       updatedAccesorios.push(value);
@@ -112,8 +107,8 @@ const ReportInternalFailures2 = ({
       updatedAccesorios = updatedAccesorios.filter((item) => item !== value);
     }
 
-    setFormData({
-      ...formData,
+    onSave({
+      ...safeFormData,
       accesorios: updatedAccesorios,
     });
   };
@@ -137,7 +132,9 @@ const ReportInternalFailures2 = ({
 
   const handleToolChange = (e) => {
     const { value, checked } = e.target;
-    let updatedTools = formData.herramientas ? [...formData.herramientas] : [];
+    let updatedTools = safeFormData.herramientas
+      ? [...safeFormData.herramientas]
+      : [];
 
     if (checked) {
       updatedTools.push(value);
@@ -145,8 +142,8 @@ const ReportInternalFailures2 = ({
       updatedTools = updatedTools.filter((item) => item !== value);
     }
 
-    setFormData({
-      ...formData,
+    onSave({
+      ...safeFormData,
       herramientas: updatedTools,
     });
   };
@@ -323,7 +320,7 @@ const ReportInternalFailures2 = ({
               value={formData.costos[key] || ""}
               onChange={handleChange}
               className="w-full border p-2 rounded bg-white"
-              readOnly={key === "totalGeneral"} // Evita que el usuario lo edite manualmente
+              readOnly={key === "totalGeneral"}
             />
           </div>
         ))}

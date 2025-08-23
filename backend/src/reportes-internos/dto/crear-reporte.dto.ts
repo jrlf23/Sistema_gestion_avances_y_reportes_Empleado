@@ -43,6 +43,7 @@ class BahiaDto {
 }
 
 export class CrearReportDto {
+  @IsOptional()
   @IsString()
   cliente: string;
 
@@ -62,9 +63,11 @@ export class CrearReportDto {
   placa: string;
 
   @IsString()
+  @IsOptional()
   marca: string;
 
   @IsString()
+  @IsOptional()
   tipo: string;
 
   @IsString()
@@ -75,35 +78,47 @@ export class CrearReportDto {
 
   @IsOptional()
   @IsDateString()
+  fecha?: string;
+
+  @IsOptional()
+  @IsDateString()
   fechaSalida?: string;
 
   @IsNumber()
+  @IsOptional()
   kilInicial: number;
 
   @IsNumber()
+  @IsOptional()
   kilFinal: number;
 
   @IsString()
+  @IsOptional()
   falla: string;
 
   @IsString()
+  @IsOptional()
   trabajoRealizado: string;
 
   @IsArray()
+  @IsOptional()
   @IsString({ each: true })
   accesorios: string[];
 
   @IsArray()
+  @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => RepuestoDto)
   repuestos: RepuestoDto[];
 
   @IsArray()
+  @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => PuntoDto)
   puntos: PuntoDto[];
 
   @IsArray()
+  @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => BahiaDto)
   bahias: BahiaDto[];
@@ -152,3 +167,4 @@ export class CrearReportDto {
   @IsString()
   observaciones_finales?: string;
 }
+

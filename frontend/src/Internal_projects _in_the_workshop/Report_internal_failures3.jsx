@@ -96,12 +96,37 @@ export default function ReportInternalFailures3({ formData, onSubmit }) {
         return Object.keys(nuevosErrores).length === 0;
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (!validarCampos()) return;
+    //const handleSubmit = (e) => {
+    //e.preventDefault();
+    //if (!validarCampos()) return;
 
-        onSubmit(localData);
+    //onSubmit(localData);
+    //};
+
+    const handleSubmit = async () => {
+        try {
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/reportes-internos/full`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+            });
+
+            const data = await res.json(); // 👈 siempre parsea la respuesta
+
+            if (!res.ok) {
+                console.error("Errores de validación:", data.message);
+                console.error("Body enviado:", formData); // 👈 también logueamos qué mandaste
+                throw new Error("Error al enviar el reporte");
+            }
+
+            console.log("Respuesta del backend:", data);
+            alert("Reporte enviado correctamente");
+        } catch (error) {
+            console.error(error);
+            alert("Hubo un error al enviar el reporte");
+        }
     };
+
 
     return (
         <form onSubmit={handleSubmit} className="p-6 max-w-6xl mx-auto space-y-6 bg-white shadow rounded">

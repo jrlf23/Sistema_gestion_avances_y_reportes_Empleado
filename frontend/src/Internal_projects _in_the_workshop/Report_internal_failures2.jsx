@@ -19,34 +19,36 @@ const ReportInternalFailures2 = ({
 
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+  const { name, value } = e.target;
 
-    // Si el campo pertenece a "costos"
-     if (safeFormData.costos && Object.keys(safeFormData.costos).includes(name)) {
-      const updatedCostos = {
-        ...safeFormData.costos,
-        [name]: value,
-      };
+  // Verificar si el campo pertenece a "costos"
+  if (safeFormData.costos && Object.keys(safeFormData.costos).includes(name)) {
+    const updatedCostos = {
+      ...safeFormData.costos,
+      [name]: value || 0, // si está vacío, se guarda como 0
+    };
 
-      // Calcular nuevo total general sumando todos menos el totalGeneral
-      const total = Object.entries(updatedCostos)
-        .filter(([key]) => key !== "totalGeneral")
-        .reduce((acc, [_, val]) => acc + parseFloat(val || 0), 0);
+    // Calcular el nuevo total general (excluyendo el campo totalGeneral)
+    const total = Object.entries(updatedCostos)
+      .filter(([key]) => key !== "totalGeneral")
+      .reduce((acc, [_, val]) => acc + parseFloat(val || 0), 0);
 
-      updatedCostos.totalGeneral = total.toFixed(2);
+    updatedCostos.totalGeneral = total.toFixed(2);
 
-      onSave({
-        ...safeFormData,
-        costos: updatedCostos,
-      });
-    } else {
-      // Campos generales
-       onSave({
-        ...safeFormData,
-        [name]: value,
-      });
-    }
-  };
+    // Guardar en el estado acumulado del paso 2
+    onSave({
+      ...safeFormData,
+      costos: updatedCostos,
+    });
+  } else {
+    // Campos generales que no son parte de "costos"
+    onSave({
+      ...safeFormData,
+      [name]: value,
+    });
+  }
+};
+
 
   const validateForm = () => {
     const requiredFields = [

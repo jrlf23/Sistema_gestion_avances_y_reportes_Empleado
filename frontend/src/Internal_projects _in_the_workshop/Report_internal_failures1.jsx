@@ -41,7 +41,13 @@ export default function ReportInternalFailures1({ formData = {}, onSave, onNext 
           : prev.fuente_reporte.filter((item) => item !== value),
       }));
     } else {
-      setLocalData((prev) => ({ ...prev, [name]: value }));
+      setLocalData((prev) => ({
+      ...prev,
+      [name]:
+        ["equipo", "sistema", "horas_km"].includes(name) && value !== ""
+          ? Number(value)
+          : value,
+    }));
     }
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
@@ -50,11 +56,13 @@ export default function ReportInternalFailures1({ formData = {}, onSave, onNext 
     let newErrors = {};
 
     if (!localData.placa.trim()) newErrors.placa = "La placa es obligatoria.";
-    if (!localData.equipo.trim()) newErrors.equipo = "El equipo es obligatorio.";
+    if (localData.equipo === "" || localData.equipo === null || localData.equipo === 0) {
+      newErrors.equipo = "El equipo es obligatorio.";}
     if (!localData.fecha) newErrors.fecha = "La fecha es obligatoria.";
     if (!localData.hora_inicio) newErrors.hora_inicio = "La hora de inicio es obligatoria.";
     if (!localData.hora_fin) newErrors.hora_fin = "La hora de fin es obligatoria.";
-    if (!localData.horas_km.trim()) newErrors.horas_km = "Las horas/Km son obligatorias.";
+    if (localData.horas_km === "" || localData.horas_km === null || localData.horas_km <= 0) {
+      newErrors.horas_km = "Las horas/Km son obligatorias.";}
     if (!localData.sistema) newErrors.sistema = "Debe seleccionar un sistema.";
     if (localData.sistema === "8" && !localData.detalles_falla.trim())
       newErrors.detalles_falla = "Debe ingresar los detalles de la falla.";

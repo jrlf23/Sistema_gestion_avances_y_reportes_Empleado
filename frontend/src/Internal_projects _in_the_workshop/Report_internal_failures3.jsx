@@ -42,23 +42,48 @@ export default function ReportInternalFailures3({ formData, onSubmit }) {
     const [errors, setErrors] = useState({});
 
     const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
+    const { name, value, type, checked } = e.target;
+
+    setLocalData((prev) => {
+        // Si es un checkbox de accesorios → manejar array
         if (name === "accesorios") {
             if (checked) {
-                setLocalData((prev) => ({
+                return {
                     ...prev,
                     accesorios: [...prev.accesorios, value],
-                }));
+                };
             } else {
-                setLocalData((prev) => ({
+                return {
                     ...prev,
                     accesorios: prev.accesorios.filter((item) => item !== value),
-                }));
+                };
             }
-        } else {
-            setLocalData((prev) => ({ ...prev, [name]: value }));
         }
-    };
+
+        // Si es un checkbox individual (boolean)
+        if (type === "checkbox") {
+            return {
+                ...prev,
+                [name]: checked,
+            };
+        }
+
+        // Si es un campo numérico → convertir a número (solo si no está vacío)
+        if (["kilometraje", "precio", "cantidad", "tiempo_estimado"].includes(name)) {
+            return {
+                ...prev,
+                [name]: value === "" ? "" : Number(value),
+            };
+        }
+
+        // Cualquier otro campo (texto, select, etc.)
+        return {
+            ...prev,
+            [name]: value,
+        };
+    });
+};
+
 
     const handleRepuestoChange = (index, field, value) => {
         const newRepuestos = [...localData.repuestos];
@@ -103,29 +128,34 @@ export default function ReportInternalFailures3({ formData, onSubmit }) {
     //onSubmit(localData);
     //};
 
-    const handleSubmit = async () => {
-        try {
-            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/reportes-internos/full`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData),
-            });
+    const handleSubmit = async (e) => {
+    e.preventDefault(); // 👈 evita que el form recargue la página
 
-            const data = await res.json(); // 👈 siempre parsea la respuesta
+    try {
+        // Normalizamos el localData, no el formData
+        const normalizedData = normalizeFormData(localData);
 
-            if (!res.ok) {
-                console.error("Errores de validación:", data.message);
-                console.error("Body enviado:", formData); // 👈 también logueamos qué mandaste
-                throw new Error("Error al enviar el reporte");
-            }
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/reportes-internos/full`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(normalizedData),
+        });
 
-            console.log("Respuesta del backend:", data);
-            alert("Reporte enviado correctamente");
-        } catch (error) {
-            console.error(error);
-            alert("Hubo un error al enviar el reporte");
+        const data = await res.json();
+
+        if (!res.ok) {
+            console.error("Errores de validación:", data.message);
+            console.error("Body enviado:", normalizedData); 
+            throw new Error("Error al enviar el reporte");
         }
-    };
+
+        console.log("Respuesta del backend:", data);
+        alert("Reporte enviado correctamente");
+    } catch (error) {
+        console.error(error);
+        alert("Hubo un error al enviar el reporte");
+    }
+};
 
 
     return (

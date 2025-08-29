@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import InteractiveTruck2 from "./Interactive_truck2";
+import { normalizeFormData } from "../utils/normalizeFormData";
 
 export default function ReportInternalFailures3({ formData, onSubmit }) {
     const accesoriosList = [
@@ -130,10 +131,11 @@ export default function ReportInternalFailures3({ formData, onSubmit }) {
 
     const handleSubmit = async (e) => {
     e.preventDefault(); // 👈 evita que el form recargue la página
-
     try {
         // Normalizamos el localData, no el formData
         const normalizedData = normalizeFormData(localData);
+
+        console.log("Body normalizado: ", normalizedData)
 
         const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/reportes-internos/full`, {
             method: "POST",

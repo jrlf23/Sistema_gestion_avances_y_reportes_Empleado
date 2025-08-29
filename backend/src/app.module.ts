@@ -19,6 +19,12 @@ import { JwtModule } from '@nestjs/jwt';
       database: process.env.DB_NAME,
       autoLoadEntities: true,
       synchronize: true,
+      logging: true,
+      extra: {
+        connectionLimit: 10,       // máximo de conexiones simultáneas
+        connectTimeout: 30000,     // 30 segundos para conectarse
+        acquireTimeout: 30000,     // 30 segundos esperando pool libre
+      },
     }),
     EmpleadoModule,
     AuthModule,
@@ -26,4 +32,4 @@ import { JwtModule } from '@nestjs/jwt';
     ReporteInternosModule,
   ],
 })
-export class AppModule {}
+export class AppModule { }

@@ -31,6 +31,61 @@
 $ npm install
 ```
 
+### Environment variables
+
+Create a `.env` file in `backend/` with your database credentials:
+
+```
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=secret
+DB_NAME=workshop
+```
+
+The server runs on port `3000` by default. CORS is enabled for the frontend.
+
+### Endpoints
+
+- `POST /reportes-internos` → Crea un reporte básico
+- `POST /reportes-internos/full` → Crea un reporte completo del wizard interno
+- `GET /reportes-internos` → Lista todos los reportes
+- `GET /reportes-internos/:id` → Obtiene un reporte por ID
+
+Body esperado para `/reportes-internos/full` (campos relevantes):
+
+```json
+{
+  "cliente": "string",
+  "placa": "string",
+  "marca": "string",
+  "tipo": "string",
+  "equipo": "string",
+  "fechaIngreso": "YYYY-MM-DD | ISO",
+  "fechaSalida": "YYYY-MM-DD | ISO",
+  "kilInicial": 0,
+  "kilFinal": 0,
+  "falla": "string",
+  "trabajoRealizado": "string",
+  "accesorios": ["string"],
+  "repuestos": [{ "nombre": "string", "cantidad": 0, "precio": 0 }],
+  "puntos": [{ "area": "CABINA|CHASIS|PLATAFORMA|OTROS", "x": 0, "y": 0 }],
+  "bahias": [
+    {
+      "numero": 1,
+      "items": [{ "nombre": "string", "lado": "izquierdo|derecho" }]
+    }
+  ],
+  "hora_inicio": "string",
+  "hora_fin": "string",
+  "horas_km": "string",
+  "sistema": "string",
+  "detalles_sistema": "string",
+  "detalles_falla": "string",
+  "fuente_reporte": ["string"]
+}
+```
+
 ## Compile and run the project
 
 ```bash

@@ -34,8 +34,21 @@ export class reportesInternosService {
   async crearReporte(data: CrearReportDto): Promise<Reporte> {
     const { repuestos, accesorios, puntos, bahias, ...datosBasicos } = data;
 
-    // ✅ Crear el reporte base
-    const reporte = this.reporteRepo.create(datosBasicos);
+    // ✅ Normalizar campos antes de crear el reporte base
+    const fuenteReporteValue = Array.isArray((data as unknown as any).fuente_reporte)
+      ? (data as unknown as any).fuente_reporte.join(', ')
+      : datosBasicos.fuente_reporte;
+
+    const formatDate = (value?: string) =>
+      value ? value.toString().slice(0, 10) : undefined;
+
+    // ✅ Crear el reporte base con normalizaciones mínimas
+    const reporte = this.reporteRepo.create({
+      ...datosBasicos,
+      fechaIngreso: formatDate(datosBasicos.fechaIngreso),
+      fechaSalida: formatDate(datosBasicos.fechaSalida),
+      fuente_reporte: fuenteReporteValue,
+    });
 
     // ✅ Solo asignar si existen repuestos
     if (repuestos && repuestos.length > 0) {

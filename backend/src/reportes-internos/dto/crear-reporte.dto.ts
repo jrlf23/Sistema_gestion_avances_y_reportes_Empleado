@@ -2,49 +2,9 @@ import { IsArray, IsDateString, IsEnum, IsNumber, IsOptional, IsString, Validate
 import { Type } from 'class-transformer';
 import { AreaEnum } from '../entities/punto.entity';
 
-class RepuestoDto {
-  @IsString()
-  nombre: string;
-
-  @IsNumber()
-  cantidad: number;
-
-  @IsNumber()
-  precio: number;
-}
-
-class PuntoDto {
-  @IsEnum(AreaEnum)
-  area: AreaEnum;
-
-  @IsNumber()
-  x: number;
-
-  @IsNumber()
-  y: number;
-}
-
-class RevisionItemDto {
-  @IsString()
-  nombre: string;
-
-  @IsString()
-  lado: 'izquierdo' | 'derecho';
-}
-
-class BahiaDto {
-  @IsNumber()
-  numero: number;
-
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => RevisionItemDto)
-  items: RevisionItemDto[];
-}
-
 export class CrearReportDto {
-  @IsOptional()
   @IsString()
+  @IsNotEmpty()
   cliente: string;
 
   @IsOptional()
@@ -60,69 +20,66 @@ export class CrearReportDto {
   logo?: string;
 
   @IsString()
+  @IsNotEmpty()
   placa: string;
 
-  @IsString()
   @IsOptional()
-  marca: string;
+  @IsString()
+  marca?: string;
+
+  @IsOptional()
+  @IsString()
+  tipo?: string;
 
   @IsString()
-  @IsOptional()
-  tipo: string;
-
-  @IsString()
+  @IsNotEmpty()
   equipo: string;
 
-  @IsDateString()
-  fechaIngreso: string;
+  // 🔹 En DB es DATE, aquí permitimos "YYYY-MM-DD"
+  @IsDate()
+  @Type(() => Date)
+  fechaIngreso: Date;
 
   @IsOptional()
-  @IsDateString()
-  fecha?: string;
+  @IsDate()
+  @Type(() => Date)
+  fechaSalida?: Date;
 
   @IsOptional()
-  @IsDateString()
-  fechaSalida?: string;
-
   @IsNumber()
-  @IsOptional()
-  kilInicial: number;
+  kilInicial?: number;
 
-  @IsNumber()
   @IsOptional()
-  kilFinal: number;
+  @IsNumber()
+  kilFinal?: number;
 
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
   falla: string;
 
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
   trabajoRealizado: string;
 
-  @IsArray()
+  // 🔹 En DB es JSON, lo recibimos como objeto/array sin validar subcampos
   @IsOptional()
-  @IsString({ each: true })
-  accesorios: string[];
+  accesorios: any;
 
-  @IsArray()
   @IsOptional()
-  @ValidateNested({ each: true })
-  @Type(() => RepuestoDto)
-  repuestos: RepuestoDto[];
+  repuestos: any;
 
-  @IsArray()
   @IsOptional()
-  @ValidateNested({ each: true })
-  @Type(() => PuntoDto)
-  puntos: PuntoDto[];
+  revision_bahias: any;
 
-  @IsArray()
   @IsOptional()
-  @ValidateNested({ each: true })
-  @Type(() => BahiaDto)
-  bahias: BahiaDto[];
+  @IsString()
+  observacion?: string;
 
+  @IsOptional()
+  @IsString()
+  enderezar?: string;
+
+  // 🔹 Nuevos campos que agregaste en entidad
   @IsOptional()
   @IsString()
   hora_inicio?: string;
@@ -167,4 +124,3 @@ export class CrearReportDto {
   @IsString()
   observaciones_finales?: string;
 }
-

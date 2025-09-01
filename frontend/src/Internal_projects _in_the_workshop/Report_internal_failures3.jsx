@@ -130,7 +130,7 @@ export default function ReportInternalFailures3({ formData, onSubmit }) {
     //};
 
     const handleSubmit = async (e) => {
-    e.preventDefault(); // 👈 evita que el form recargue la página
+    e.preventDefault();
     try {
         // Normalizamos el localData, no el formData
         const normalizedData = normalizeFormData(localData);

@@ -5,7 +5,7 @@ export function normalizeFormData(formData) {
     return !isNaN(d.getTime());
   };
 
-  // 🔧 Normalizar repuestos (convertir strings a números)
+  // ✅ Repuestos → guardar como JSON
   const repuestos = Array.isArray(formData.repuestos)
     ? formData.repuestos.map((r) => ({
         nombre: r.nombre || "",
@@ -14,45 +14,35 @@ export function normalizeFormData(formData) {
       }))
     : [];
 
-  // 🔧 Normalizar bahías (desde revisionData si existe)
-  const bahias = Array.isArray(formData.revisionData)
+  // ✅ Bahías → JSON (desde revisionData)
+  const revision_bahias = Array.isArray(formData.revisionData)
     ? formData.revisionData.map((bahia, index) => ({
         numero: index + 1,
-        items: [
-          ...Object.entries(bahia.izquierdo || {})
-            .filter(([_, checked]) => checked)
-            .map(([nombre]) => ({ nombre, lado: "izquierdo" })),
-          ...Object.entries(bahia.derecho || {})
-            .filter(([_, checked]) => checked)
-            .map(([nombre]) => ({ nombre, lado: "derecho" })),
-        ],
+        izquierdo: bahia.izquierdo || {},
+        derecho: bahia.derecho || {},
       }))
     : [];
 
   return {
-    cliente: formData.cliente || "",
-    direccion: formData.direccion || "",
-    color: formData.color || "",
-    logo: formData.logo || "",
-    placa: formData.placa || "",
-    marca: formData.marca || "",
-    tipo: formData.tipo || "",
-    equipo: formData.equipo || "",
-    fechaIngreso: isValidDate(formData.fechaIngreso)
+    cliente: formData.cliente,
+    direccion: formData.direccion,
+    color: formData.color,
+    logo: formData.logo,
+    placa: formData.placa,
+    fechaIngreso: formData.fechaIngreso 
       ? new Date(formData.fechaIngreso).toISOString()
-      : new Date().toISOString(), // 👈 obligatorio → fallback a hoy
-    fechaSalida: isValidDate(formData.fechaSalida)
-      ? new Date(formData.fechaSalida).toISOString()
-      : undefined,
-    kilInicial: Number(formData.kilInicial) || 0,
-    kilFinal: Number(formData.kilFinal) || 0,
-    falla: formData.falla || "",
-    trabajoRealizado: formData.trabajoRealizado || "",
-    accesorios: Array.isArray(formData.accesorios) ? formData.accesorios : [],
-    repuestos,
-    puntos: Array.isArray(formData.puntos) ? formData.puntos : [],
-    bahias,
-    observaciones_finales: formData.observaciones || "", // 👈 corregido al nombre correcto
-    // 🔴 elimino supervisor, estado, id_empleado porque no están en tu DTO
+      : null,
+    fechaEntrega: formData.fechaEntrega 
+      ? new Date(formData.fechaEntrega).toISOString()
+      : null,
+    supervisor: formData.supervisor,
+    encargado: formData.encargado,
+    estado: formData.estado || "pendiente",
+    id_empleado: formData.id_empleado || 1,
+    accesorios: formData.accesorios || [],
+    repuestos: formData.repuestos || [],
+    trabajos: formData.trabajos || [],
+    observaciones: formData.observaciones || "",
+    puntosCamion: formData.puntosCamion || [],
   };
 }

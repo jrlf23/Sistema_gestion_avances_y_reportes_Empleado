@@ -26,7 +26,7 @@ export class reportesInternosController {
 
   @Post('full')
   async crearFull(@Body() dto: CrearReporteFullDto) {
-    const data = await this.service.crearFull(dto);
+    const data = await this.service.crearFullCompat(dto);
     return { mensaje: 'Reporte completo creado', ...data };
   }
 }

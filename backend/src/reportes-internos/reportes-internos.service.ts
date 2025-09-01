@@ -1,96 +1,144 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { Reporte } from "./entities/reporte.entity";
-import { Repuesto } from "./entities/repuesto.entity";
-import { Accesorio } from "./entities/accesorio.entity";
-import { Punto } from "./entities/punto.entity";
-import { Bahia } from "./entities/bahia.entity";
-import { RevisionBahiaItem } from "./entities/revision-bahia-item.entity";
-import { CrearReportDto } from "./dto/crear-reporte.dto";
+import { ReporteInterno1 } from "./entities/reporte-interno1.entity";
+import { ReporteInterno2 } from "./entities/reporte-interno2.entity";
+import { ReporteInterno3 } from "./entities/reporte-interno3.entity";
+import { CrearReporteFullDto, CrearReportePaso1Dto, CrearReportePaso2Dto, CrearReportePaso3Dto } from "./dto/crear-reporte.dto";
 
 @Injectable()
 export class reportesInternosService {
   constructor(
-    @InjectRepository(Reporte)
-    private reporteRepo: Repository<Reporte>,
+    @InjectRepository(ReporteInterno1)
+    private repoPaso1: Repository<ReporteInterno1>,
 
-    @InjectRepository(Repuesto)
-    private repuestoRepo: Repository<Repuesto>,
+    @InjectRepository(ReporteInterno2)
+    private repoPaso2: Repository<ReporteInterno2>,
 
-    @InjectRepository(Accesorio)
-    private accesorioRepo: Repository<Accesorio>,
-
-    @InjectRepository(Punto)
-    private puntoRepo: Repository<Punto>,
-
-    @InjectRepository(Bahia)
-    private bahiaRepo: Repository<Bahia>,
-
-    @InjectRepository(RevisionBahiaItem)
-    private revisionItemRepo: Repository<RevisionBahiaItem>,
+    @InjectRepository(ReporteInterno3)
+    private repoPaso3: Repository<ReporteInterno3>,
   ) {}
 
-  async crearReporte(data: CrearReportDto): Promise<Reporte> {
-    const { repuestos, accesorios, puntos, bahias, ...datosBasicos } = data;
-
-    // ✅ Crear el reporte base
-    const reporte = this.reporteRepo.create(datosBasicos);
-
-    // ✅ Solo asignar si existen repuestos
-    if (repuestos && repuestos.length > 0) {
-      reporte.repuestos = repuestos.map((r) =>
-        this.repuestoRepo.create({ ...r }),
-      );
-    }
-
-    // ✅ Solo asignar si existen accesorios
-    if (accesorios && accesorios.length > 0) {
-      reporte.accesorios = accesorios.map((a) =>
-        this.accesorioRepo.create({ nombre: a }),
-      );
-    }
-
-    // ✅ Solo asignar si existen puntos
-    if (puntos && puntos.length > 0) {
-      reporte.puntos = puntos.map((p) => this.puntoRepo.create({ ...p }));
-    }
-
-    // ✅ Solo asignar si existen bahías
-    if (bahias && bahias.length > 0) {
-      reporte.bahias = bahias.map((b) => {
-        const nuevaBahia = this.bahiaRepo.create({ numero: b.numero });
-        nuevaBahia.items =
-          b.items?.map((item) =>
-            this.revisionItemRepo.create({
-              nombre: item.nombre,
-              lado: item.lado,
-            }),
-          ) ?? [];
-        return nuevaBahia;
-      });
-    }
-
-    return await this.reporteRepo.save(reporte);
+  private toDate(value?: string | null): string | null | undefined {
+    if (value === undefined) return undefined;
+    if (value === null) return null;
+    return value.toString().slice(0, 10);
   }
 
-  async obtenerTodos(): Promise<Reporte[]> {
-    return await this.reporteRepo.find({
-      relations: ["repuestos", "accesorios", "puntos", "bahias", "bahias.items"],
-      order: { fechaCreacion: "DESC" },
+  async crearPaso1(data: CrearReportePaso1Dto): Promise<ReporteInterno1> {
+    const entity = this.repoPaso1.create({
+      ...data,
+      fuente_reporte: Array.isArray(data.fuente_reporte) ? data.fuente_reporte.join(', ') : (data as any).fuente_reporte,
     });
+    return this.repoPaso1.save(entity);
   }
 
-  async obtenerPorId(id: number): Promise<Reporte> {
-    const reporte = await this.reporteRepo.findOne({
-      where: { id },
-      relations: ["repuestos", "accesorios", "puntos", "bahias", "bahias.items"],
+  async crearPaso2(data: CrearReportePaso2Dto): Promise<ReporteInterno2> {
+    const entity = this.repoPaso2.create({
+      ...data,
+      fecha: this.toDate(data.fecha) as string,
+      fecha_tentativa_entrega: this.toDate(data.fecha_tentativa_entrega) ?? null,
+      fecha_real_entrega: this.toDate(data.fecha_real_entrega) ?? null,
     });
+    return this.repoPaso2.save(entity);
+  }
 
-    if (!reporte) {
-      throw new NotFoundException(`Reporte con ID ${id} no encontrado`);
+  async crearPaso3(data: CrearReportePaso3Dto): Promise<ReporteInterno3> {
+    const entity = this.repoPaso3.create({
+      ...data,
+      fecha_ingreso: this.toDate(data.fecha_ingreso) ?? null,
+      fecha_salida: this.toDate(data.fecha_salida) ?? null,
+    });
+    return this.repoPaso3.save(entity);
+  }
+
+  async crearFull(payload: CrearReporteFullDto) {
+    const paso1 = await this.crearPaso1(payload.paso1);
+    const paso2 = await this.crearPaso2(payload.paso2);
+    const paso3 = await this.crearPaso3(payload.paso3);
+    return { paso1, paso2, paso3 };
+  }
+
+  async crearFullCompat(payload: any) {
+    if (payload && payload.paso1 && payload.paso2 && payload.paso3) {
+      return this.crearFull(payload as CrearReporteFullDto);
     }
 
-    return reporte;
+    const toDate = (v?: any) => (v ? v.toString().slice(0, 10) : undefined);
+    const toInt = (v: any) => (v === undefined || v === null || v === '' ? undefined : Number(v));
+
+    const paso1: CrearReportePaso1Dto = {
+      placa: payload.placa,
+      equipo: payload.equipo,
+      fecha: toDate(payload.fecha) as string,
+      hora_inicio: payload.hora_inicio,
+      hora_fin: payload.hora_fin,
+      horas_km: payload.horas_km,
+      sistema: String(payload.sistema ?? ''),
+      detalles_sistema: payload.detalles_sistema,
+      detalles_falla: payload.detalles_falla,
+      fuente_reporte: Array.isArray(payload.fuente_reporte)
+        ? payload.fuente_reporte
+        : payload.fuente_reporte
+        ? String(payload.fuente_reporte).split(',').map((s: string) => s.trim())
+        : [],
+      id_empleado: toInt(payload.id_empleado),
+    } as CrearReportePaso1Dto;
+
+    const paso2: CrearReportePaso2Dto = {
+      fecha: toDate(payload.fecha) as string,
+      equipo: payload.equipo,
+      placa: payload.placa,
+      tipo: payload.tipo,
+      marca: payload.marca,
+      depto: payload.depto,
+      kilometraje: toInt(payload.kilometraje),
+      combustible: (payload.combustible as any) ?? '1/4',
+      trabajo_solicitado: payload.trabajoSolicitado ?? payload.trabajo_solicitado,
+      observaciones: payload.observaciones,
+      supervisor_recibe: payload.supervisorRecibe,
+      mecanico_asignado: payload.mecanicoAsignado,
+      supervisor_entrega: payload.supervisorEntrega,
+      fecha_tentativa_entrega: toDate(payload.fechaTentativaEntrega),
+      fecha_real_entrega: toDate(payload.fechaRealEntrega),
+      persona_entrega: payload.personaEntrega,
+      persona_recibe: payload.personaRecibe,
+      inspeccion: payload.inspeccion,
+      accesorios: payload.accesorios,
+      herramientas: payload.herramientas,
+      costos: payload.costos,
+      id_empleado: toInt(payload.id_empleado),
+    } as CrearReportePaso2Dto;
+
+    const paso3: CrearReportePaso3Dto = {
+      cliente: payload.cliente,
+      direccion: payload.direccion,
+      color: payload.color,
+      logo: payload.logo,
+      placa: payload.placa,
+      marca: payload.marca,
+      tipo: payload.tipo,
+      equipo: payload.equipo,
+      fecha_ingreso: toDate(payload.fechaIngreso),
+      fecha_salida: toDate(payload.fechaSalida),
+      kil_inicial: toInt(payload.kilInicial),
+      kil_final: toInt(payload.kilFinal),
+      falla: payload.falla ?? payload.detalles_falla ?? '',
+      trabajo_realizado: payload.trabajoRealizado ?? '',
+      accesorios: payload.accesorios,
+      repuestos: Array.isArray(payload.repuestos)
+        ? payload.repuestos.map((r: any) => ({
+            nombre: r.nombre,
+            cantidad: toInt(r.cantidad) ?? 0,
+            precio: toInt(r.precio) ?? 0,
+          }))
+        : undefined,
+      revision_bahias: payload.revisionData ?? payload.revision_bahias,
+      observacion: payload.observacion,
+      enderezar: payload.enderezar,
+      id_empleado: toInt(payload.id_empleado),
+    } as CrearReportePaso3Dto;
+
+    return this.crearFull({ paso1, paso2, paso3 });
   }
 }

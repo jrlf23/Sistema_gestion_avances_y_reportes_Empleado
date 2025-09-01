@@ -26,9 +26,12 @@ export class reportesInternosService {
   }
 
   async crearPaso1(data: CrearReportePaso1Dto): Promise<ReporteInterno1> {
+    const fuente = Array.isArray((data as any)?.fuente_reporte)
+      ? (data as any).fuente_reporte.join(', ')
+      : (data as any)?.fuente_reporte ?? '';
     const entity = this.repoPaso1.create({
       ...data,
-      fuente_reporte: Array.isArray(data.fuente_reporte) ? data.fuente_reporte.join(', ') : (data as any).fuente_reporte,
+      fuente_reporte: fuente,
     });
     return this.repoPaso1.save(entity);
   }

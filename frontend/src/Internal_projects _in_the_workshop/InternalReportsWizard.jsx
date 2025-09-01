@@ -21,15 +21,11 @@ export default function InternalReportsWizard() {
   const handleSubmit = async () => {
     try {
       const normalizedData = normalizeFormData(formData);
-
-      const res = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/reportes-internos/full`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(normalizedData),
-        }
-      );
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/reportes-internos/full`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(normalizedData),
+      });
 
       if (!res.ok) throw new Error("Error al enviar el reporte");
 

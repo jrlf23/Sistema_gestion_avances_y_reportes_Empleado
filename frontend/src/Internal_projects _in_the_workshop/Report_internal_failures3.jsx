@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import InteractiveTruck2 from "./Interactive_truck2";
 
-export default function ReportInternalFailures3({ formData, onSubmit }) {
+export default function ReportInternalFailures3({ formData, onSubmit, onSave }) {
     const accesoriosList = [
         "Pescantes", "Plataformas", "Porta cono", "Tapon tanque",
         "Porta llanta", "Aparta cable"
@@ -129,12 +129,19 @@ export default function ReportInternalFailures3({ formData, onSubmit }) {
     //};
 
     const handleSubmit = async (e) => {
-    e.preventDefault(); // 👈 evita que el form recargue la página
+    e.preventDefault();
 
+    // Si viene onSubmit del wizard, asegura guardar antes en el estado global y delega
+    if (typeof onSubmit === "function") {
+        if (typeof onSave === "function") {
+            onSave(localData);
+        }
+        return onSubmit();
+    }
+
+    // Fallback: envío directo (modo independiente)
     try {
-        // Normalizamos el localData, no el formData
         const normalizedData = normalizeFormData(localData);
-
         const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/reportes-internos/full`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -142,13 +149,11 @@ export default function ReportInternalFailures3({ formData, onSubmit }) {
         });
 
         const data = await res.json();
-
         if (!res.ok) {
             console.error("Errores de validación:", data.message);
-            console.error("Body enviado:", normalizedData); 
+            console.error("Body enviado:", normalizedData);
             throw new Error("Error al enviar el reporte");
         }
-
         console.log("Respuesta del backend:", data);
         alert("Reporte enviado correctamente");
     } catch (error) {

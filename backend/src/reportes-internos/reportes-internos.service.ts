@@ -70,7 +70,11 @@ export class reportesInternosService {
     const toDate = (v?: any) => (v ? v.toString().slice(0, 10) : undefined);
     const toInt = (v: any) => (v === undefined || v === null || v === '' ? undefined : Number(v));
 
-    const paso1: CrearReportePaso1Dto | undefined = (payload.placa || payload.equipo || payload.fecha || payload.hora_inicio)
+    const hasPaso1Min = !!(payload?.placa && payload?.equipo && (payload?.fecha || payload?.hora_inicio));
+    const hasPaso2Min = !!(payload?.fecha && payload?.equipo && payload?.placa && (payload?.trabajoSolicitado || payload?.trabajo_solicitado));
+    const hasPaso3Min = !!(payload?.cliente && payload?.placa && (payload?.falla || payload?.detalles_falla) && (payload?.trabajoRealizado));
+
+    const paso1: CrearReportePaso1Dto | undefined = hasPaso1Min
       ? ({
           placa: payload.placa,
           equipo: payload.equipo,
@@ -90,7 +94,7 @@ export class reportesInternosService {
         } as CrearReportePaso1Dto)
       : undefined;
 
-    const paso2: CrearReportePaso2Dto | undefined = (payload.fecha || payload.trabajoSolicitado || payload.accesorios || payload.herramientas)
+    const paso2: CrearReportePaso2Dto | undefined = hasPaso2Min
       ? ({
           fecha: toDate(payload.fecha) as string,
           equipo: payload.equipo,
@@ -117,7 +121,7 @@ export class reportesInternosService {
         } as CrearReportePaso2Dto)
       : undefined;
 
-    const paso3: CrearReportePaso3Dto | undefined = (payload.cliente || payload.falla || payload.trabajoRealizado || payload.repuestos)
+    const paso3: CrearReportePaso3Dto | undefined = hasPaso3Min
       ? ({
           cliente: payload.cliente,
           direccion: payload.direccion,

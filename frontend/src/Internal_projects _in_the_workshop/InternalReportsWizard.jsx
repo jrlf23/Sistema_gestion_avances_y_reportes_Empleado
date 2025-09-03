@@ -18,9 +18,11 @@ export default function InternalReportsWizard() {
     }));
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (latestStepData) => {
     try {
-      const normalizedData = normalizeFormData(formData);
+      const finalData = latestStepData ? { ...formData, ...latestStepData } : formData;
+      const normalizedData = normalizeFormData(finalData);
+      console.log('payload a enviar:', normalizedData);
       const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/reportes-internos/full`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

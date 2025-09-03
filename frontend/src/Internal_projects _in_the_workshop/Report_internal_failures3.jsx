@@ -136,7 +136,7 @@ export default function ReportInternalFailures3({ formData, onSubmit, onSave }) 
         if (typeof onSave === "function") {
             onSave(localData);
         }
-        return onSubmit();
+        return onSubmit(localData);
     }
 
     // Fallback: envío directo (modo independiente)

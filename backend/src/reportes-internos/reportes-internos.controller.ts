@@ -24,9 +24,9 @@ export class reportesInternosController {
     return { mensaje: 'Paso 3 creado', reporte };
   }
 
-  @Post('full')
-  async crearFull(@Body() dto: CrearReporteFullDto) {
-    const data = await this.service.crearFull(dto);
+   @Post('full')
+  async crearFull(@Body() payload: any) {
+    const data = await this.service.crearFullCompat(payload);
     return { mensaje: 'Reporte completo creado', ...data };
   }
 }

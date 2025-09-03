@@ -87,7 +87,7 @@ const ReportInternalFailures2 = ({
       return;
     }
 
-    onSave({ ReportInternalFailures2: safeFormData });
+    onSave({ ...safeFormData });
 
     if (onNext) {
       onNext();
@@ -244,10 +244,10 @@ const ReportInternalFailures2 = ({
           <InteractiveTruck
             selectedAreas={formData.inspeccion || []}
             setSelectedAreas={(newState) =>
-              setFormData((prevData) => ({
-                ...prevData,
+              onSave({
+                ...safeFormData,
                 inspeccion: newState.inspeccion,
-              }))
+              })
             }
           />
         </div>

@@ -21,6 +21,7 @@ export default function InternalReportsWizard() {
   const handleSubmit = async () => {
     try {
       const normalizedData = normalizeFormData(formData);
+      console.log('payload a enviar:', normalizedData);
       const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/reportes-internos/full`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

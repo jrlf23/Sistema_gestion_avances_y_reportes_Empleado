@@ -25,12 +25,24 @@ export class reportesInternosService {
     return value.toString().slice(0, 10);
   }
 
+  private toTime(value?: string | null): string | null | undefined {
+    if (value === undefined) return undefined;
+    if (value === null) return null;
+    const v = value.toString();
+    if (/^\d{2}:\d{2}:\d{2}$/.test(v)) return v;
+    if (/^\d{2}:\d{2}$/.test(v)) return `${v}:00`;
+    return v;
+  }
+
   async crearPaso1(data: CrearReportePaso1Dto): Promise<ReporteInterno1> {
     const fuente = Array.isArray((data as any)?.fuente_reporte)
       ? (data as any).fuente_reporte.join(', ')
       : (data as any)?.fuente_reporte ?? '';
     const entity = this.repoPaso1.create({
       ...data,
+      fecha: this.toDate(data.fecha) as string,
+      hora_inicio: this.toTime(data.hora_inicio) as string,
+      hora_fin: this.toTime(data.hora_fin) as string,
       fuente_reporte: fuente,
     });
     return this.repoPaso1.save(entity);
@@ -56,6 +68,8 @@ export class reportesInternosService {
   }
 
   async crearFull(payload: CrearReporteFullDto) {
+    // Debug
+    // console.log('[crearFull] payload keys:', Object.keys(payload || {}));
     const paso1 = await this.crearPaso1(payload.paso1);
     const paso2 = await this.crearPaso2(payload.paso2);
     const paso3 = await this.crearPaso3(payload.paso3);
@@ -72,15 +86,18 @@ export class reportesInternosService {
 
     const hasPaso1Min = !!(payload?.placa && payload?.equipo && (payload?.fecha || payload?.hora_inicio));
     const hasPaso2Min = !!(payload?.fecha && payload?.equipo && payload?.placa && (payload?.trabajoSolicitado || payload?.trabajo_solicitado));
-    const hasPaso3Min = !!(payload?.cliente && payload?.placa && (payload?.falla || payload?.detalles_falla) && (payload?.trabajoRealizado));
+    const hasPaso3Min = !!(payload?.cliente && payload?.placa && ((payload?.falla && String(payload?.falla).trim()) || (payload?.detalles_falla && String(payload?.detalles_falla).trim())) && (payload?.trabajoRealizado && String(payload?.trabajoRealizado).trim()));
+
+    // console.log('[crearFullCompat] keys:', Object.keys(payload || {}));
+    // console.log('[crearFullCompat] hasPaso1Min:', hasPaso1Min, 'hasPaso2Min:', hasPaso2Min, 'hasPaso3Min:', hasPaso3Min);
 
     const paso1: CrearReportePaso1Dto | undefined = hasPaso1Min
       ? ({
           placa: payload.placa,
           equipo: payload.equipo,
           fecha: toDate(payload.fecha) as string,
-          hora_inicio: payload.hora_inicio,
-          hora_fin: payload.hora_fin,
+          hora_inicio: toDate(payload.fecha) ? payload.hora_inicio : this.toTime(payload.hora_inicio),
+          hora_fin: this.toTime(payload.hora_fin),
           horas_km: payload.horas_km,
           sistema: String(payload.sistema ?? ''),
           detalles_sistema: payload.detalles_sistema,

@@ -10,22 +10,27 @@ import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT ?? '3306', 10),
-      username: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      autoLoadEntities: true,
-      synchronize: true,
-      logging: true,
-      extra: {
-        connectionLimit: 10,       // máximo de conexiones simultáneas
-        connectTimeout: 30000,     // 30 segundos para conectarse
-        acquireTimeout: 30000,     // 30 segundos esperando pool libre
-      },
-    }),
+    TypeOrmModule.forRoot((() => {
+      const isSqlite = process.env.DB_TYPE === 'sqlite';
+      if (isSqlite) {
+        return {
+          type: 'sqlite',
+          database: process.env.SQLITE_DB_PATH || 'data/dev.sqlite',
+          autoLoadEntities: true,
+          synchronize: true,
+        } as any;
+      }
+      return {
+        type: 'mysql',
+        host: process.env.DB_HOST,
+        port: parseInt(process.env.DB_PORT ?? '3306', 10),
+        username: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
+        autoLoadEntities: true,
+        synchronize: true,
+      } as any;
+    })()),
     EmpleadoModule,
     AuthModule,
     ReporteExternoModule,

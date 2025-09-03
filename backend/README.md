@@ -36,11 +36,16 @@ $ npm install
 Create a `.env` file in `backend/` with your database credentials:
 
 ```
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=secret
-DB_NAME=workshop
+DB_TYPE=sqlite # o mysql
+# SQLite (desarrollo rápido)
+SQLITE_DB_PATH=./data/dev.sqlite
+
+# MySQL (producción)
+# DB_HOST=localhost
+# DB_PORT=3306
+# DB_USER=root
+# DB_PASSWORD=secret
+# DB_NAME=workshop
 ```
 
 The server runs on port `3000` by default. CORS is enabled for the frontend.

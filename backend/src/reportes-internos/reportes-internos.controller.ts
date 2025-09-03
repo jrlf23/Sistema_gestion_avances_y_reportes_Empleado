@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, Get, Post } from "@nestjs/common";
 import { CrearReporteFullDto, CrearReportePaso1Dto, CrearReportePaso2Dto, CrearReportePaso3Dto } from "./dto/crear-reporte.dto";
 import { reportesInternosService } from "./reportes-internos.service";
 
@@ -28,5 +28,12 @@ export class reportesInternosController {
   async crearFull(@Body() payload: any) {
     const data = await this.service.crearFullCompat(payload);
     return { mensaje: 'Reporte completo creado', ...data };
+  }
+
+  @Get('full')
+  infoFull() {
+    return {
+      mensaje: 'Use POST /reportes-internos/full para crear el reporte. Este GET es solo informativo.'
+    };
   }
 }

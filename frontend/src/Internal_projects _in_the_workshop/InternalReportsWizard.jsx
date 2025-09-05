@@ -19,7 +19,15 @@ export default function InternalReportsWizard() {
   };
 
   const handleSubmit = async () => {
-  const d = formData;
+  const d = latestStepData ? { ...formData, ...latestStepData } : formData;
+  const repuestosLimpios = Array.isArray(d.repuestos)
+  ? d.repuestos.filter(r => (r?.nombre || '').trim() !== '')
+               .map(r => ({
+                 nombre: (r.nombre || '').trim(),
+                 cantidad: r.cantidad === '' || r.cantidad == null ? 0 : Number(r.cantidad),
+                 precio: r.precio === '' || r.precio == null ? 0 : Number(r.precio),
+               }))
+  : [];
 
   const payload = {
     paso1: {
@@ -68,14 +76,14 @@ export default function InternalReportsWizard() {
       marca: d.marca,
       tipo: d.tipo,
       equipo: d.equipo,
-      fecha_ingreso: d.fechaIngreso,     // YYYY-MM-DD
-      fecha_salida: d.fechaSalida,       // YYYY-MM-DD
-      kil_inicial: d.kilInicial,
-      kil_final: d.kilFinal,
+      fecha_ingreso: d.fechaIngreso || null,
+      fecha_salida: d.fechaSalida || null,
+      kil_inicial: d.kilInicial === '' || d.kilInicial == null ? null : Number(d.kilInicial),
+      kil_final: d.kilFinal === '' || d.kilFinal == null ? null : Number(d.kilFinal),
       falla: d.falla,                    // OBLIGATORIO
       trabajo_realizado: d.trabajoRealizado, // OBLIGATORIO
       accesorios: d.accesorios,
-      repuestos: d.repuestos,            // [{nombre,cantidad,precio}]
+      repuestos: repuestosLimpios,           // [{nombre,cantidad,precio}]
       revision_bahias: d.revisionData,
       observacion: d.observacion,
       enderezar: d.enderezar,

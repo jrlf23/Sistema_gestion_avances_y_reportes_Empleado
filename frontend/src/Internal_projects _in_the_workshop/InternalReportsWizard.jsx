@@ -18,9 +18,9 @@ export default function InternalReportsWizard() {
     }));
   };
 
-  const handleSubmit = async (latestStepData) => {
+  const handleSubmit = async (step3Data = null) => {
     try {
-      const d = latestStepData ? { ...formData, ...latestStepData } : formData;
+      const d = step3Data ? { ...formData, ...step3Data } : formData;
 
       const payload = {
         paso1: {

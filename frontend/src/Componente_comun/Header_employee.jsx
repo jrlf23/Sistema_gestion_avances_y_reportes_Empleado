@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Bars3Icon, XMarkIcon, UserCircleIcon } from '@heroicons/react/24/outline';
-import { NavLink, useNavigate } from 'react-router';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 
 export const Header_employee = () => {
@@ -10,8 +10,9 @@ export const Header_employee = () => {
 
     // Actualiza el estado de autenticación cuando cambia el token
     useEffect(() => {
-        setIsLoggedIn(!!localStorage.getItem("authToken"));
-    }, [localStorage.getItem("authToken")]); // Se ejecuta solo cuando cambia el token
+        const token = localStorage.getItem("authToken");
+        setIsLoggedIn(!!token);
+    }, []);
 
 
     const handleLogout = () => {

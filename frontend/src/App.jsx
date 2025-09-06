@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes, Outlet } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Outlet, Navigate } from 'react-router-dom';
 import Header_employee from './Componente_comun/Header_employee';
 import { Signup_employee } from './Singup_employee/Employee_singup';
 import { Login_employee } from './Login_employee/Employee_login';
@@ -18,6 +18,12 @@ const EmployeeLayout = () => (
   </>
 );
 
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem('authToken');
+  if (!token) return <Navigate to="/" replace />;
+  return children;
+};
+
 const App = () => {
   return (
     <BrowserRouter>
@@ -27,8 +33,22 @@ const App = () => {
           {/* Rutas de empleados */}
           <Route path="/" element={<Login_employee />} />
           <Route path="/Signup_employee" element={<Signup_employee />} />
-          <Route path="/ReportExternalFailures" element={<ReportExternalFailures />} />
-          <Route path="/ReportInternalFailures" element={<InternalReportsWizard />} />
+           <Route
+            path="/ReportExternalFailures"
+            element={
+              <ProtectedRoute>
+                <ReportExternalFailures />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ReportInternalFailures"
+            element={
+              <ProtectedRoute>
+                <InternalReportsWizard />
+              </ProtectedRoute>
+            }
+          />
         </Route>
       </Routes>
     </BrowserRouter>

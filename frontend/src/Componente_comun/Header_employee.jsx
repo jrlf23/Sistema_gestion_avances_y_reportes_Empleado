@@ -24,9 +24,20 @@ export const Header_employee = () => {
 
     return (
         <header className="flex justify-between items-center bg-white p-4 px-20 shadow-md relative">
-            <NavLink to="/">
-            <img src="/LogoInversionesMarin-1.png" alt="Logo" className="w-20 h-20 object-contain" />
-            </NavLink>
+            <div className="flex items-center gap-3">
+                <NavLink to="/">
+                    <img src="/LogoInversionesMarin-1.png" alt="Logo" className="w-20 h-20 object-contain" />
+                </NavLink>
+                {!isLoggedIn ? (
+                    <NavLink to="/Signup_employee" className="bg-primary text-white px-4 py-2 rounded">
+                        Registrarse
+                    </NavLink>
+                ) : (
+                    <button onClick={handleLogout} className="border border-primary text-primary px-4 py-2 rounded">
+                        Cerrar sesión
+                    </button>
+                )}
+            </div>
 
             {/* Ícono del menú hamburguesa */}
             <input type="checkbox" id="menu-toggle" className="hidden peer" />

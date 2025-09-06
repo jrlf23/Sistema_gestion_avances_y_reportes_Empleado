@@ -71,7 +71,7 @@ export const Header_employee = () => {
                         {/* Dropdown del usuario */}
                         {menuOpen && (
                             <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-md p-2">
-                                <NavLink to="/perfil" className="block px-4 py-2 text-black hover:bg-gray-200">Mi Perfil</NavLink>
+                                {/* <NavLink to="/perfil" className="block px-4 py-2 text-black hover:bg-gray-200">Mi Perfil</NavLink> */}
                                 <button onClick={handleLogout} className="block w-full text-left px-4 py-2 text-black hover:bg-gray-200">
                                     Cerrar Sesión
                                 </button>
@@ -80,7 +80,7 @@ export const Header_employee = () => {
                     </div>
                 ) : (
                     <>
-                        <NavLink to="/Signup_employee" className="bg-primary text-white px-4 py-2 rounded">
+                        <NavLink to="/Signup_employee" className="border border-primary text-primary px-4 py-2 rounded">
                             Registrarse
                         </NavLink>
                         <NavLink to="/Login_employee" className="border border-primary text-primary px-4 py-2 rounded">

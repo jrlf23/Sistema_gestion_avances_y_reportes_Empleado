@@ -62,11 +62,8 @@ export const Header_employee = () => {
                         <UserCircleIcon className="w-10 h-10 text-primary cursor-pointer" onClick={() => setMenuOpen(!menuOpen)} />
                     ) : (
                         <>
-                            <NavLink to="/registro" className="bg-primary text-white px-4 py-2 rounded w-3/4 text-center">
+                            <NavLink to="/Signup_employee" className="bg-primary text-white px-4 py-2 rounded w-3/4 text-center">
                                 Registrarse
-                            </NavLink>
-                            <NavLink to="/inicio" className="border border-primary text-primary px-4 py-2 rounded w-3/4 text-center">
-                                Iniciar sesión
                             </NavLink>
                         </>
                     )}
@@ -93,9 +90,6 @@ export const Header_employee = () => {
                     <>
                         <NavLink to="/Signup_employee" className="bg-primary text-white px-4 py-2 rounded">
                             Registrarse
-                        </NavLink>
-                        <NavLink to="/Login_employee" className="border border-primary text-primary px-4 py-2 rounded">
-                            Iniciar sesión
                         </NavLink>
                     </>
                 )}

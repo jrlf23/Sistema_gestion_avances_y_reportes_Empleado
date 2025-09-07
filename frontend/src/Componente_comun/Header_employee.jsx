@@ -83,7 +83,7 @@ export const Header_employee = () => {
                         <NavLink to="/Signup_employee" className="border border-primary text-primary px-4 py-2 rounded">
                             Registrarse
                         </NavLink>
-                        <NavLink to="/Login_employee" className="border border-primary text-primary px-4 py-2 rounded">
+                        <NavLink to="/" className="border border-primary text-primary px-4 py-2 rounded">
                             Iniciar sesión
                         </NavLink>
                     </>

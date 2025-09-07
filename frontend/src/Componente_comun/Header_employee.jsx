@@ -1,17 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { Bars3Icon, XMarkIcon, UserCircleIcon } from '@heroicons/react/24/outline';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 
 
 export const Header_employee = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
 
     // Actualiza el estado de autenticación cuando cambia el token
     useEffect(() => {
     const token = localStorage.getItem("authToken");
         setIsLoggedIn(!!token);
+    }, [location]);
+
+    useEffect(() => {
+        const onStorage = () => {
+            const token = localStorage.getItem("authToken");
+            setIsLoggedIn(!!token);
+        };
+        window.addEventListener('storage', onStorage);
+        return () => window.removeEventListener('storage', onStorage);
     }, []);
 
 

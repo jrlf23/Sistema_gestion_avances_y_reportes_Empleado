@@ -175,7 +175,7 @@ return (
             <div className="mb-4">
                 <label className="block text-gray-700">Fuente del Reporte *</label>
                 <div className="flex flex-wrap gap-2">
-                    {["Planificado", "Hoja de inspección", "Reporte de fallas", "En rutina de preventivo", "Inspección técnico", "Doble check distribución", "Falla en carretera", "Accidente de tránsito", "Inspección coordinador flota"].map((item) => (
+                    {["Ticket", "Hoja de inspección", "Reporte de fallas", "En rutina de preventivo", "Inspección técnico", "Doble check distribución", "Falla en carretera", "Accidente de tránsito", "Inspección coordinador flota"].map((item) => (
                         <label key={item} className="flex items-center gap-2">
                             <input type="checkbox" value={item} onChange={handleChange} />
                             {item}

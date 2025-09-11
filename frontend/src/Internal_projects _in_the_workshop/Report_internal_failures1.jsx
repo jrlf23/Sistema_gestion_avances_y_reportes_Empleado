@@ -42,12 +42,9 @@ export default function ReportInternalFailures1({ formData = {}, onSave, onNext 
       }));
     } else {
       setLocalData((prev) => ({
-      ...prev,
-      [name]:
-        ["equipo", "sistema", "horas_km"].includes(name) && value !== ""
-          ? Number(value)
-          : value,
-    }));
+        ...prev,
+        [name]: value,
+      }));
     }
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
@@ -57,12 +54,14 @@ export default function ReportInternalFailures1({ formData = {}, onSave, onNext 
 
     if (!localData.placa.trim()) newErrors.placa = "La placa es obligatoria.";
     if (localData.equipo === "" || localData.equipo === null || localData.equipo === 0) {
-      newErrors.equipo = "El equipo es obligatorio.";}
+      newErrors.equipo = "El equipo es obligatorio.";
+    }
     if (!localData.fecha) newErrors.fecha = "La fecha es obligatoria.";
     if (!localData.hora_inicio) newErrors.hora_inicio = "La hora de inicio es obligatoria.";
     if (!localData.hora_fin) newErrors.hora_fin = "La hora de fin es obligatoria.";
     if (localData.horas_km === "" || localData.horas_km === null || localData.horas_km <= 0) {
-      newErrors.horas_km = "Las horas/Km son obligatorias.";}
+      newErrors.horas_km = "Las horas/Km son obligatorias.";
+    }
     if (!localData.sistema) newErrors.sistema = "Debe seleccionar un sistema.";
     if (localData.sistema === "8" && !localData.detalles_falla.trim())
       newErrors.detalles_falla = "Debe ingresar los detalles de la falla.";
@@ -206,7 +205,7 @@ export default function ReportInternalFailures1({ formData = {}, onSave, onNext 
           <label className="block text-gray-700">Fuente del Reporte *</label>
           <div className="flex flex-wrap gap-2">
             {[
-              "Planificado",
+              "Ticket",
               "Hoja de inspección",
               "Reporte de fallas",
               "En rutina de preventivo",

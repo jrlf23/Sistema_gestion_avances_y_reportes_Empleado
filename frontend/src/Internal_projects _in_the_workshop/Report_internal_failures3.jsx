@@ -40,49 +40,50 @@ export default function ReportInternalFailures3({ formData, onSubmit, onSave }) 
     });
 
     const [errors, setErrors] = useState({});
+    const [submitting, setSubmitting] = useState(false)
 
     const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+        const { name, value, type, checked } = e.target;
 
-    setLocalData((prev) => {
-        // Si es un checkbox de accesorios → manejar array
-        if (name === "accesorios") {
-            if (checked) {
+        setLocalData((prev) => {
+            // Si es un checkbox de accesorios → manejar array
+            if (name === "accesorios") {
+                if (checked) {
+                    return {
+                        ...prev,
+                        accesorios: [...prev.accesorios, value],
+                    };
+                } else {
+                    return {
+                        ...prev,
+                        accesorios: prev.accesorios.filter((item) => item !== value),
+                    };
+                }
+            }
+
+            // Si es un checkbox individual (boolean)
+            if (type === "checkbox") {
                 return {
                     ...prev,
-                    accesorios: [...prev.accesorios, value],
-                };
-            } else {
-                return {
-                    ...prev,
-                    accesorios: prev.accesorios.filter((item) => item !== value),
+                    [name]: checked,
                 };
             }
-        }
 
-        // Si es un checkbox individual (boolean)
-        if (type === "checkbox") {
+            // Si es un campo numérico → convertir a número (solo si no está vacío)
+            if (["kilometraje", "precio", "cantidad", "tiempo_estimado"].includes(name)) {
+                return {
+                    ...prev,
+                    [name]: value === "" ? "" : Number(value),
+                };
+            }
+
+            // Cualquier otro campo (texto, select, etc.)
             return {
                 ...prev,
-                [name]: checked,
+                [name]: value,
             };
-        }
-
-        // Si es un campo numérico → convertir a número (solo si no está vacío)
-        if (["kilometraje", "precio", "cantidad", "tiempo_estimado"].includes(name)) {
-            return {
-                ...prev,
-                [name]: value === "" ? "" : Number(value),
-            };
-        }
-
-        // Cualquier otro campo (texto, select, etc.)
-        return {
-            ...prev,
-            [name]: value,
-        };
-    });
-};
+        });
+    };
 
 
     const handleRepuestoChange = (index, field, value) => {
@@ -129,38 +130,51 @@ export default function ReportInternalFailures3({ formData, onSubmit, onSave }) 
     //};
 
     const handleSubmit = async (e) => {
-    e.preventDefault();
+        e.preventDefault();
 
-    // Si viene onSubmit del wizard, asegura guardar antes en el estado global y delega
-    if (typeof onSubmit === "function") {
-        if (typeof onSave === "function") {
-            onSave(localData);
+        // Si viene onSubmit del wizard, asegura guardar antes en el estado global y delega
+        if (typeof onSubmit === "function") {
+            if (typeof onSave === "function") {
+                onSave(localData);
+            }
+            return onSubmit();
+            if (submitting) return; // evitar dobles clics
+            setSubmitting(true);
+            const maybePromise = onSubmit();
+            if (maybePromise && typeof maybePromise.then === 'function') {
+                await maybePromise;
+            }
+            setSubmitting(false);
+            return;
         }
-        return onSubmit();
-    }
 
-    // Fallback: envío directo (modo independiente)
-    try {
-        const normalizedData = normalizeFormData(localData);
-        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/reportes-internos/full`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(normalizedData),
-        });
+        // Fallback: envío directo (modo independiente)
+        try {
+            if (submitting) return;
+            setSubmitting(true);
+            const normalizedData = normalizeFormData(localData);
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/reportes-internos/full`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(normalizedData),
+            });
 
-        const data = await res.json();
-        if (!res.ok) {
-            console.error("Errores de validación:", data.message);
-            console.error("Body enviado:", normalizedData);
-            throw new Error("Error al enviar el reporte");
-        }
-        console.log("Respuesta del backend:", data);
-        alert("Reporte enviado correctamente");
-    } catch (error) {
-        console.error(error);
-        alert("Hubo un error al enviar el reporte");
-    }
-};
+            const data = await res.json();
+            if (!res.ok) {
+                console.error("Errores de validación:", data.message);
+                console.error("Body enviado:", normalizedData);
+                throw new Error("Error al enviar el reporte");
+            }
+            console.log("Respuesta del backend:", data);
+            alert("Reporte enviado correctamente");
+            window.location.replace('/lobby');
+        } catch (error) {
+            console.error(error);
+            alert("Hubo un error al enviar el reporte");
+            } finally {
+        setSubmitting(false);
+        } 
+    };
 
 
     return (
@@ -319,8 +333,11 @@ export default function ReportInternalFailures3({ formData, onSubmit, onSave }) 
             <button
                 type="submit"
                 className="w-full py-2 bg-green-600 text-white rounded font-semibold hover:bg-green-700"
+                disabled={submitting}
+                className={`w-full py-2 rounded font-semibold ${submitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 text-white hover:bg-green-700'}`}
             >
                 Finalizar
+                {submitting ? 'Enviando...' : 'Finalizar'}
             </button>
         </form>
     );

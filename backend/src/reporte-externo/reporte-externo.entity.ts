@@ -13,6 +13,9 @@ export class ReporteExterno
     @Column()
     equipo: string;
 
+    @Column({ type: 'date' })
+    fecha: string;
+
     @Column()
     horaInicio: string;
 

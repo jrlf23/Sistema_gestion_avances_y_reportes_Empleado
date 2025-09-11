@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
 
 export const Login_employee= () => {
     const [formData, setFormData] = useState({
@@ -8,6 +9,7 @@ export const Login_employee= () => {
 
     const [error, setError] = useState('');
     const [mensaje, setMensaje] = useState('');
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({
@@ -41,6 +43,7 @@ export const Login_employee= () => {
             if (response.ok) {
                 setMensaje('Inicio de sesión exitoso');
                 localStorage.setItem('authToken', data.authToken); // Guardar token
+                navigate("/Lobby")
             } else {
                 setError(data.message || 'Error en el inicio de sesión');
             }

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ReportInternalFailures1 from "./Report_internal_failures1";
 import ReportInternalFailures2 from "./Report_internal_failures2";
 import ReportInternalFailures3 from "./Report_internal_failures3";
@@ -7,6 +8,7 @@ import { normalizeFormData } from "../utils/normalizeFormData";
 export default function InternalReportsWizard() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({});
+  const navigate = useNavigate();
 
   const handleNext = () => setStep((prev) => prev + 1);
   const handleBack = () => setStep((prev) => prev - 1);
@@ -97,6 +99,7 @@ export default function InternalReportsWizard() {
       const json = await res.json();
       console.log("Respuesta del backend:", json);
       alert("Reporte enviado correctamente");
+      navigate('/lobby', { replace: true });
     } catch (error) {
       console.error(error);
       alert("Hubo un error al enviar el reporte");

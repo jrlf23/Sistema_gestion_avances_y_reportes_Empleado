@@ -40,6 +40,7 @@ export default function ReportInternalFailures3({ formData, onSubmit, onSave }) 
     });
 
     const [errors, setErrors] = useState({});
+    const [submitting, setSubmitting] = useState(false);
 
     const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -136,11 +137,20 @@ export default function ReportInternalFailures3({ formData, onSubmit, onSave }) 
         if (typeof onSave === "function") {
             onSave(localData);
         }
-        return onSubmit();
+        if (submitting) return; // evitar dobles clics
+        setSubmitting(true);
+        const maybePromise = onSubmit();
+        if (maybePromise && typeof maybePromise.then === 'function') {
+            await maybePromise;
+        }
+        setSubmitting(false);
+        return;
     }
 
     // Fallback: envío directo (modo independiente)
     try {
+        if (submitting) return;
+        setSubmitting(true);
         const normalizedData = normalizeFormData(localData);
         const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/reportes-internos/full`, {
             method: "POST",
@@ -156,9 +166,12 @@ export default function ReportInternalFailures3({ formData, onSubmit, onSave }) 
         }
         console.log("Respuesta del backend:", data);
         alert("Reporte enviado correctamente");
+        window.location.replace('/lobby');
     } catch (error) {
         console.error(error);
         alert("Hubo un error al enviar el reporte");
+    } finally {
+        setSubmitting(false);
     }
 };
 
@@ -318,9 +331,10 @@ export default function ReportInternalFailures3({ formData, onSubmit, onSave }) 
 
             <button
                 type="submit"
-                className="w-full py-2 bg-green-600 text-white rounded font-semibold hover:bg-green-700"
+                disabled={submitting}
+                className={`w-full py-2 rounded font-semibold ${submitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 text-white hover:bg-green-700'}`}
             >
-                Finalizar
+                {submitting ? 'Enviando...' : 'Finalizar'}
             </button>
         </form>
     );

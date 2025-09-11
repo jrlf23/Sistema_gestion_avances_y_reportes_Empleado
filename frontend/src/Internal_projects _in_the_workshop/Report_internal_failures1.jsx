@@ -42,12 +42,9 @@ export default function ReportInternalFailures1({ formData = {}, onSave, onNext 
       }));
     } else {
       setLocalData((prev) => ({
-      ...prev,
-      [name]:
-        ["equipo", "sistema", "horas_km"].includes(name) && value !== ""
-          ? Number(value)
-          : value,
-    }));
+        ...prev,
+        [name]: value,
+      }));
     }
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };

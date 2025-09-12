@@ -212,7 +212,7 @@ export default function ReportInternalFailures1({ formData = {}, onSave, onNext 
               "Inspección técnico",
               "Doble check distribución",
               "Falla en carretera",
-              "Accidente de tránsito",
+              "Accidente",
               "Inspección coordinador flota",
             ].map((item) => (
               <label key={item} className="flex items-center gap-2">

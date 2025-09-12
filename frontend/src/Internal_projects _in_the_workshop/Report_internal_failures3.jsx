@@ -332,7 +332,6 @@ export default function ReportInternalFailures3({ formData, onSubmit, onSave }) 
 
             <button
                 type="submit"
-                className="w-full py-2 bg-green-600 text-white rounded font-semibold hover:bg-green-700"
                 disabled={submitting}
                 className={`w-full py-2 rounded font-semibold ${submitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 text-white hover:bg-green-700'}`}
             >

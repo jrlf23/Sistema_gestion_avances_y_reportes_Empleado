@@ -9,6 +9,10 @@ export class CreateReporteExternoDto
     @IsNotEmpty()
     equipo: string;
 
+    @IsOptional()
+    @IsString()
+    cd?: string;
+
     @IsDateString()
     fecha: string;
 

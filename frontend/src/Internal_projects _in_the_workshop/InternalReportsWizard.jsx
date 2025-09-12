@@ -28,6 +28,7 @@ export default function InternalReportsWizard() {
         paso1: {
           placa: d.placa,
           equipo: d.equipo,
+          cd: d.cd,
           fecha: d.fecha,
           hora_inicio: d.hora_inicio,
           hora_fin: d.hora_fin,

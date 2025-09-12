@@ -4,6 +4,7 @@ const ReportExternalFailures = () => {
     const [formData, setFormData] = useState({
         placa: "",
         equipo: "",
+        cd: "",
         fecha: "",
         horaInicio: "",
         horaFin: "",
@@ -87,6 +88,7 @@ const ReportExternalFailures = () => {
             setFormData({
                 placa: "",
                 equipo: "",
+                cd: "",
                 fecha: "",
                 horaInicio: "",
                 horaFin: "",
@@ -118,6 +120,12 @@ return (
                 <label className="block text-gray-700">Equipo *</label>
                 <input type="text" name="equipo" value={formData.equipo} onChange={handleChange} className="w-full border p-2 rounded" />
                 {errors.equipo && <p className="text-red-500 text-sm">{errors.equipo}</p>}
+            </div>
+
+            {/* CD */}
+            <div className="mb-4">
+                <label className="block text-gray-700">CD</label>
+                <input type="text" name="cd" value={formData.cd} onChange={handleChange} className="w-full border p-2 rounded" />
             </div>
 
             {/* Fecha */}

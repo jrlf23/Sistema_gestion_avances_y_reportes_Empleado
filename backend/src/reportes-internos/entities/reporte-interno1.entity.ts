@@ -11,6 +11,9 @@ export class ReporteInterno1 {
   @Column({ type: 'varchar', length: 100 })
   equipo: string;
 
+  @Column({ type: 'varchar', length: 100, nullable: true, name: 'CD' })
+  cd: string | null;
+
   @Column({ type: 'date' })
   fecha: string;
 

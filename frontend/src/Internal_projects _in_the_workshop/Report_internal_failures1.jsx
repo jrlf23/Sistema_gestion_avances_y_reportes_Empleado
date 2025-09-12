@@ -113,6 +113,12 @@ export default function ReportInternalFailures1({ formData = {}, onSave, onNext 
           {errors.equipo && <p className="text-red-500 text-sm">{errors.equipo}</p>}
         </div>
 
+        {/* CD (Ubicacion) */}
+        <div className="mb-4">
+          <label className="block text-gray-700">CD *</label>
+          <input type="text" name="CD" value={formData.placa} onChange={handleChange} className="w-full border p-2 rounded" />
+        </div>
+
         {/* Fecha */}
         <div className="mb-4">
           <label className="block text-gray-700">Fecha *</label>

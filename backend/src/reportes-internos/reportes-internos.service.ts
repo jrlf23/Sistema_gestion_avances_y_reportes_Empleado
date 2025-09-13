@@ -78,6 +78,7 @@ async crearFullCompat(payload: any) {
       ? ({
           placa: payload.placa,
           equipo: payload.equipo,
+          cd: payload.cd,
           fecha: toDate(payload.fecha) as string,
           hora_inicio: payload.hora_inicio,
           hora_fin: payload.hora_fin,

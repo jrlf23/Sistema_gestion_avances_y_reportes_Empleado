@@ -4,6 +4,7 @@ import { Type } from 'class-transformer';
 export class CrearReportePaso1Dto {
   @IsString() @IsNotEmpty() placa: string;
   @IsString() @IsNotEmpty() equipo: string;
+  @IsOptional() @IsString() cd?: string;
   @IsDateString() fecha: string;
   @IsString() @IsNotEmpty() hora_inicio: string;
   @IsString() @IsNotEmpty() hora_fin: string;

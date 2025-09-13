@@ -13,6 +13,9 @@ export class ReporteExterno
     @Column()
     equipo: string;
 
+    @Column({name: 'CD', type: 'varchar', length: 100, nullable: true})
+    cd: string;
+
     @Column({type: 'date'})
     fecha:string
 

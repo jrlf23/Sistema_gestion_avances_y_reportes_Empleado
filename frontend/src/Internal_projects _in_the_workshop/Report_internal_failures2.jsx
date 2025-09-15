@@ -194,6 +194,7 @@ const ReportInternalFailures2 = ({
                     onChange={handleChange}
                     className="w-full border p-2 rounded"
                   >
+                    <option value="E">E</option>
                     <option value="1/4">1/4</option>
                     <option value="1/2">1/2</option>
                     <option value="3/4">3/4</option>

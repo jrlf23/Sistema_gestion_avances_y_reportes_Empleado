@@ -8,6 +8,7 @@ export default function ReportInternalFailures1({ formData = {}, onSave, onNext 
   const [localData, setLocalData] = useState({
     placa: formData.placa || "",
     equipo: formData.equipo || "",
+    cd: formData.cd || "",
     fecha: formData.fecha || "",
     hora_inicio: formData.hora_inicio || "",
     hora_fin: formData.hora_fin || "",
@@ -116,7 +117,13 @@ export default function ReportInternalFailures1({ formData = {}, onSave, onNext 
         {/* CD (Ubicacion) */}
         <div className="mb-4">
           <label className="block text-gray-700">CD *</label>
-          <input type="text" name="CD" value={formData.placa} onChange={handleChange} className="w-full border p-2 rounded" />
+          <input
+            type="text"
+            name="cd"
+            value={localData.cd}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
         </div>
 
         {/* Fecha */}

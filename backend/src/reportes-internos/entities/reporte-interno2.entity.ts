@@ -26,8 +26,8 @@ export class ReporteInterno2 {
   @Column({ type: 'int', nullable: true })
   kilometraje: number | null;
 
-  @Column({ type: 'enum', enum: ['1/4', '1/2', '3/4', 'F'], default: '1/4' })
-  combustible: '1/4' | '1/2' | '3/4' | 'F';
+  @Column({ type: 'enum', enum: ['E','1/4', '1/2', '3/4', 'F'], default: '1/4' })
+  combustible: 'E' | '1/4' | '1/2' | '3/4' | 'F';
 
   @Column({ type: 'text' })
   trabajo_solicitado: string;

@@ -24,7 +24,7 @@ export class CrearReportePaso2Dto {
   @IsOptional() @IsString() marca?: string;
   @IsOptional() @IsString() depto?: string;
   @IsOptional() @IsInt() kilometraje?: number;
-  @IsIn(['1/4', '1/2', '3/4', 'F']) combustible: '1/4' | '1/2' | '3/4' | 'F';
+  @IsIn(['E','1/4', '1/2', '3/4', 'F']) combustible: 'E' |'1/4' | '1/2' | '3/4' | 'F';
   @IsString() trabajo_solicitado: string;
   @IsOptional() @IsString() observaciones?: string;
   @IsOptional() @IsString() supervisor_recibe?: string;

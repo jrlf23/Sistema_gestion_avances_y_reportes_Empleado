@@ -19,35 +19,35 @@ const ReportInternalFailures2 = ({
 
 
   const handleChange = (e) => {
-  const { name, value } = e.target;
+    const { name, value } = e.target;
 
-  // Verificar si el campo pertenece a "costos"
-  if (safeFormData.costos && Object.keys(safeFormData.costos).includes(name)) {
-    const updatedCostos = {
-      ...safeFormData.costos,
-      [name]: value || 0, // si está vacío, se guarda como 0
-    };
+    // Verificar si el campo pertenece a "costos"
+    if (safeFormData.costos && Object.keys(safeFormData.costos).includes(name)) {
+      const updatedCostos = {
+        ...safeFormData.costos,
+        [name]: value || 0, // si está vacío, se guarda como 0
+      };
 
-    // Calcular el nuevo total general (excluyendo el campo totalGeneral)
-    const total = Object.entries(updatedCostos)
-      .filter(([key]) => key !== "totalGeneral")
-      .reduce((acc, [_, val]) => acc + parseFloat(val || 0), 0);
+      // Calcular el nuevo total general (excluyendo el campo totalGeneral)
+      const total = Object.entries(updatedCostos)
+        .filter(([key]) => key !== "totalGeneral")
+        .reduce((acc, [_, val]) => acc + parseFloat(val || 0), 0);
 
-    updatedCostos.totalGeneral = total.toFixed(2);
+      updatedCostos.totalGeneral = total.toFixed(2);
 
-    // Guardar en el estado acumulado del paso 2
-    onSave({
-      ...safeFormData,
-      costos: updatedCostos,
-    });
-  } else {
-    // Campos generales que no son parte de "costos"
-    onSave({
-      ...safeFormData,
-      [name]: value,
-    });
-  }
-};
+      // Guardar en el estado acumulado del paso 2
+      onSave({
+        ...safeFormData,
+        costos: updatedCostos,
+      });
+    } else {
+      // Campos generales que no son parte de "costos"
+      onSave({
+        ...safeFormData,
+        [name]: value,
+      });
+    }
+  };
 
 
   const validateForm = () => {
@@ -236,6 +236,25 @@ const ReportInternalFailures2 = ({
             </div>
           ))}
         </div>
+
+
+        {/* combustible */}  
+        <div className="mb-4">
+          <label className="block text-gray-700">Combustible</label>
+          <select
+            name="combustible"
+            value={formData.combustible || ""}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          >
+            <option value="E">E</option>
+            <option value="1/4">1/4</option>
+            <option value="1/2">1/2</option>
+            <option value="3/4">3/4</option>
+            <option value="F">F</option>
+          </select>
+        </div>
+
 
         {/* Inspección del camión */}
         <h3 className="text-xl font-semibold text-center mt-4">

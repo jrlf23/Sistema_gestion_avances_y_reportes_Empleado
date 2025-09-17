@@ -36,7 +36,8 @@ export default function ReportInternalFailures3({ formData, onSubmit, onSave }) 
             derecho: itemsRevision.reduce((acc, item) => ({ ...acc, [item]: false }), {})
         })),
         observacion: formData.observacion || "",
-        enderezar: formData.enderezar || ""
+        enderezar: formData.enderezar || "",
+        empleados: formData.empleados || [{ nombre: "", apellido: "", fechaInicio: "", fechaFin: "", horas: "" }]
     });
 
     const [errors, setErrors] = useState({});
@@ -105,6 +106,20 @@ export default function ReportInternalFailures3({ formData, onSubmit, onSave }) 
         setLocalData({ ...localData, revisionData: newData });
     };
 
+    const handleEmpleadoChange = (index, field, value) => {
+        const newEmpleados = [...localData.empleados];
+        newEmpleados[index][field] = value;
+        setLocalData({ ...localData, empleados: newEmpleados });
+    };
+
+    const agregarEmpleado = () => {
+        setLocalData((prev) => ({
+            ...prev,
+            empleados: [...prev.empleados, { nombre: "", apellido: "", fechaInicio: "", fechaFin: "", horas: "" }],
+        }));
+    };
+
+
     const validarCampos = () => {
         const nuevosErrores = {};
         const camposObligatorios = [
@@ -171,9 +186,9 @@ export default function ReportInternalFailures3({ formData, onSubmit, onSave }) 
         } catch (error) {
             console.error(error);
             alert("Hubo un error al enviar el reporte");
-            } finally {
-        setSubmitting(false);
-        } 
+        } finally {
+            setSubmitting(false);
+        }
     };
 
 
@@ -279,6 +294,58 @@ export default function ReportInternalFailures3({ formData, onSubmit, onSave }) 
                     + Agregar Repuesto
                 </button>
             </section>
+
+            {/* Empleados que trabajaron en proyecto */}
+            <section>
+                <h2 className="font-semibold mb-2">Detalle de Empleados</h2>
+                {localData.empleados.map((empleado, index) => (
+                    <div key={index} className="grid grid-cols-5 gap-2 mb-2">
+                        <input
+                            type="text"
+                            placeholder="Nombre"
+                            value={empleado.nombre}
+                            onChange={(e) => handleEmpleadoChange(index, "nombre", e.target.value)}
+                            className="border p-2 rounded"
+                        />
+                        <input
+                            type="text"
+                            placeholder="Apellido"
+                            value={empleado.apellido}
+                            onChange={(e) => handleEmpleadoChange(index, "apellido", e.target.value)}
+                            className="border p-2 rounded"
+                        />
+                        <input
+                            type="date"
+                            placeholder="Fecha inicio"
+                            value={empleado.fechaInicio}
+                            onChange={(e) => handleEmpleadoChange(index, "fechaInicio", e.target.value)}
+                            className="border p-2 rounded"
+                        />
+                        <input
+                            type="date"
+                            placeholder="Fecha fin"
+                            value={empleado.fechaFin}
+                            onChange={(e) => handleEmpleadoChange(index, "fechaFin", e.target.value)}
+                            className="border p-2 rounded"
+                        />
+                        <input
+                            type="number"
+                            placeholder="Horas trabajadas"
+                            value={empleado.horas}
+                            onChange={(e) => handleEmpleadoChange(index, "horas", e.target.value)}
+                            className="border p-2 rounded"
+                        />
+                    </div>
+                ))}
+                <button
+                    type="button"
+                    onClick={agregarEmpleado}
+                    className="px-4 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                    + Agregar Empleado
+                </button>
+            </section>
+
 
             {/* Camión */}
             <section className="flex justify-center">

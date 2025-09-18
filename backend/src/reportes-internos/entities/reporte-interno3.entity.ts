@@ -53,6 +53,8 @@ export class ReporteInterno3 {
   @Column({ type: 'json', nullable: true })
   repuestos: any | null;
 
+  @Column({ type: 'json', nullable: true }) empleados: any | null;
+
   @Column({ type: 'json', nullable: true, name: 'revision_bahias' })
   revision_bahias: any | null;
 

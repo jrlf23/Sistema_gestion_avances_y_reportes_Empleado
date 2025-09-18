@@ -84,6 +84,7 @@ export default function InternalReportsWizard() {
           observacion: d.observacion,
           enderezar: d.enderezar,
           id_empleado: d.id_empleado,
+          empleados: d.empleados,
         },
       };
 

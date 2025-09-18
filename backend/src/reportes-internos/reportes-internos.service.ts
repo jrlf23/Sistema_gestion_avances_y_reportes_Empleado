@@ -51,6 +51,7 @@ export class reportesInternosService {
       ...data,
       fecha_ingreso: this.toDate(data.fecha_ingreso) ?? null,
       fecha_salida: this.toDate(data.fecha_salida) ?? null,
+      empleados: data.empleados ?? null,
     });
     return this.repoPaso3.save(entity);
   }
@@ -150,6 +151,7 @@ async crearFullCompat(payload: any) {
           observacion: payload.observacion,
           enderezar: payload.enderezar,
           id_empleado: toInt(payload.id_empleado),
+          empleados: payload.empleados,
         } as CrearReportePaso3Dto)
       : undefined;
 

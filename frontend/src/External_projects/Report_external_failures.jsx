@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ReportExternalFailures = () => {
     const [formData, setFormData] = useState({
@@ -16,6 +17,7 @@ const ReportExternalFailures = () => {
     });
 
     const [errors, setErrors] = useState({});
+    const navigate = useNavigate();
 
     const sistemas = [
         { value: "1", label: "Motor" },
@@ -84,6 +86,7 @@ const ReportExternalFailures = () => {
             const data = await response.json();
             console.log("Reporte guardado:", data);
             alert("Reporte enviado con éxito.");
+            navigate('/lobby', { replace: true });
 
             setFormData({
                 placa: "",

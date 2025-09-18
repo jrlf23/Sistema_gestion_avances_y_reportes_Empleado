@@ -69,6 +69,7 @@ export class CrearReportePaso3Dto {
   @IsOptional() @IsString() observacion?: string;
   @IsOptional() @IsString() enderezar?: string;
   @IsOptional() @IsInt() id_empleado?: number;
+  @IsOptional() empleados?: any;
 }
 
 export class CrearReporteFullDto {

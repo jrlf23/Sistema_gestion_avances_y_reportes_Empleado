@@ -38,7 +38,7 @@ export class ReporteExterno
     @Column('simple-array')
     fuenteReporte: string[];    
 
-    @ManyToOne(() => Empleado, { nullable: false, onDelete: 'RESTRICT' })
+    @ManyToOne(() => Empleado, { nullable: true, onDelete: 'SET NULL', onUpdate: 'CASCADE' })
     @JoinColumn({ name: 'id_empleado', referencedColumnName: 'id_empleado' })
     empleado: Empleado;
 }

@@ -71,10 +71,14 @@ const ReportExternalFailures = () => {
         if (!validateForm()) return;
 
         try {
+            const token = localStorage.getItem('authToken');
             const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/reportes/externos`,
                 {
                     method: "POST",
-                    headers: { "Content-Type": "application/json", },
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                    },
                     body: JSON.stringify(formData),
                 }
             );

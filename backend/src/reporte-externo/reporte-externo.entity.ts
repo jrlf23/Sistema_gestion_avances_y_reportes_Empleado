@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, JoinColumn, ManyToOne } from "typeorm";
+import { Empleado } from "src/Empleado/empleado.entity";
 
 
 @Entity('ReporteExterno')
@@ -35,5 +36,9 @@ export class ReporteExterno
     detallesFalla: string;
 
     @Column('simple-array')
-    fuenteReporte: string[];    
+    fuenteReporte: string[];
+
+    @ManyToOne(() => Empleado, { nullable: false, onDelete: 'RESTRICT' })
+    @JoinColumn({ name: 'id_empleado', referencedColumnName: 'id_empleado' })
+    empleado: Empleado;
 }

@@ -30,7 +30,7 @@ export const Login_employee= () => {
         setMensaje('');
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/usuario/login`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/login/employee`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ export const Login_employee= () => {
             if (response.ok) {
                 setMensaje('Inicio de sesión exitoso');
                 localStorage.setItem('authToken', data.authToken); // Guardar token
-                navigate("/Lobby")
+                navigate("/lobby", { replace: true })
             } else {
                 setError(data.message || 'Error en el inicio de sesión');
             }

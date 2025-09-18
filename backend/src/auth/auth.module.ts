@@ -11,6 +11,7 @@ import { AuthController } from "./auth.controller";
         imports: [TypeOrmModule.forFeature([Empleado]), JwtModule.register({secret: process.env.JWT_SECRET || 'supersecreto', signOptions: {expiresIn: '1h'},}),],
         providers: [AuthService],
         controllers: [AuthController],
+        exports: [JwtModule],
     }
 )
 

@@ -34,4 +34,6 @@ export class CreateReporteExternoDto
 
     @IsArray()
     fuenteReporte: string[];
+
+    // Se asignará desde el token; no viene del cliente
 }

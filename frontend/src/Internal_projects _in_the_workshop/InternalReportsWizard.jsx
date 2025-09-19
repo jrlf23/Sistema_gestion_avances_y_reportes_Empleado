@@ -90,9 +90,13 @@ export default function InternalReportsWizard() {
 
       console.log('payload a enviar:', payload);
 
+      const token = localStorage.getItem('authToken');
       const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/reportes-internos/full`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify(payload),
       });
 

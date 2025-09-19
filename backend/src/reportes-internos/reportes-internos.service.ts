@@ -36,6 +36,18 @@ export class reportesInternosService {
     return this.repoPaso1.save(entity);
   }
 
+  async crearPaso1ForEmpleado(data: CrearReportePaso1Dto, empleadoId: number | undefined): Promise<ReporteInterno1> {
+    const fuente = Array.isArray((data as any)?.fuente_reporte)
+      ? (data as any).fuente_reporte.join(', ')
+      : (data as any)?.fuente_reporte ?? '';
+    const entity = this.repoPaso1.create({
+      ...data,
+      fuente_reporte: fuente,
+      empleado: empleadoId ? ({ id_empleado: empleadoId } as any) : null,
+    });
+    return this.repoPaso1.save(entity);
+  }
+
   async crearPaso2(data: CrearReportePaso2Dto): Promise<ReporteInterno2> {
     const entity = this.repoPaso2.create({
       ...data,
@@ -46,12 +58,34 @@ export class reportesInternosService {
     return this.repoPaso2.save(entity);
   }
 
+  async crearPaso2ForEmpleado(data: CrearReportePaso2Dto, empleadoId: number | undefined): Promise<ReporteInterno2> {
+    const entity = this.repoPaso2.create({
+      ...data,
+      fecha: this.toDate(data.fecha) as string,
+      fecha_tentativa_entrega: this.toDate(data.fecha_tentativa_entrega) ?? null,
+      fecha_real_entrega: this.toDate(data.fecha_real_entrega) ?? null,
+      empleado: empleadoId ? ({ id_empleado: empleadoId } as any) : null,
+    });
+    return this.repoPaso2.save(entity);
+  }
+
   async crearPaso3(data: CrearReportePaso3Dto): Promise<ReporteInterno3> {
     const entity = this.repoPaso3.create({
       ...data,
       fecha_ingreso: this.toDate(data.fecha_ingreso) ?? null,
       fecha_salida: this.toDate(data.fecha_salida) ?? null,
       empleados: data.empleados ?? null,
+    });
+    return this.repoPaso3.save(entity);
+  }
+
+  async crearPaso3ForEmpleado(data: CrearReportePaso3Dto, empleadoId: number | undefined): Promise<ReporteInterno3> {
+    const entity = this.repoPaso3.create({
+      ...data,
+      fecha_ingreso: this.toDate(data.fecha_ingreso) ?? null,
+      fecha_salida: this.toDate(data.fecha_salida) ?? null,
+      empleados: data.empleados ?? null,
+      empleado: empleadoId ? ({ id_empleado: empleadoId } as any) : null,
     });
     return this.repoPaso3.save(entity);
   }
@@ -160,6 +194,28 @@ async crearFullCompat(payload: any) {
     if (paso2) result.paso2 = await this.crearPaso2(paso2);
     if (paso3) result.paso3 = await this.crearPaso3(paso3);
     return result;
+  }
+
+  async crearFullCompatForEmpleado(payload: any, empleadoId: number | undefined) {
+    if (payload && payload.paso1 && payload.paso2 && payload.paso3) {
+      const p1 = await this.crearPaso1ForEmpleado(payload.paso1, empleadoId);
+      const p2 = await this.crearPaso2ForEmpleado(payload.paso2, empleadoId);
+      const p3 = await this.crearPaso3ForEmpleado(payload.paso3, empleadoId);
+      return { paso1: p1, paso2: p2, paso3: p3 };
+    }
+
+    const data = await this.crearFullCompat(payload);
+    // En los casos compat, añadimos empleado si existen pasos
+    if (data.paso1) {
+      await this.repoPaso1.update({ id_reporte_interno1: data.paso1.id_reporte_interno1 }, { empleado: empleadoId ? ({ id_empleado: empleadoId } as any) : null } as any);
+    }
+    if (data.paso2) {
+      await this.repoPaso2.update({ id_reporte_interno2: data.paso2.id_reporte_interno2 }, { empleado: empleadoId ? ({ id_empleado: empleadoId } as any) : null } as any);
+    }
+    if (data.paso3) {
+      await this.repoPaso3.update({ id_reporte_interno3: data.paso3.id_reporte_interno3 }, { empleado: empleadoId ? ({ id_empleado: empleadoId } as any) : null } as any);
+    }
+    return data;
   }
 }
 

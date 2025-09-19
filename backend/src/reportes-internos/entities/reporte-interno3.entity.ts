@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Empleado } from 'src/Empleado/empleado.entity';
 
 @Entity({ name: 'ReporteInterno3' })
 export class ReporteInterno3 {
@@ -67,8 +68,9 @@ export class ReporteInterno3 {
   @Column({ type: 'varchar', length: 50, default: 'pendiente' })
   estado: string;
 
-  @Column({ type: 'int', nullable: true })
-  id_empleado: number | null;
+  @ManyToOne(() => Empleado, { nullable: true, onDelete: 'SET NULL', onUpdate: 'CASCADE' })
+  @JoinColumn({ name: 'id_empleado', referencedColumnName: 'id_empleado' })
+  empleado: Empleado | null;
 
   @CreateDateColumn({ name: 'created_at' })
   created_at: Date;

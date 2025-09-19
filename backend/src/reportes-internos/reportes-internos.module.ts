@@ -5,6 +5,8 @@ import { ReporteInterno2 } from "./entities/reporte-interno2.entity";
 import { ReporteInterno3 } from "./entities/reporte-interno3.entity";
 import { reportesInternosController } from "./reportes-internos.controller";
 import { reportesInternosService } from "./reportes-internos.service";
+import { AuthModule } from "src/auth/auth.module";
+import { JwtAuthGuard } from "src/auth/jwt.guard";
 
 
 @Module({
@@ -12,10 +14,11 @@ import { reportesInternosService } from "./reportes-internos.service";
         TypeOrmModule.forFeature([
             ReporteInterno1, ReporteInterno2, ReporteInterno3,
         ]),
+        AuthModule
     ],
 
     controllers: [reportesInternosController],
-    providers: [reportesInternosService]
+    providers: [reportesInternosService, JwtAuthGuard]
 })
 
 export class ReporteInternosModule {}

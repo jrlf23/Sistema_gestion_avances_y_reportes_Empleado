@@ -168,9 +168,13 @@ export default function ReportInternalFailures3({ formData, onSubmit, onSave }) 
             if (submitting) return;
             setSubmitting(true);
             const normalizedData = normalizeFormData(localData);
+            const token = localStorage.getItem('authToken');
             const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/reportes-internos/full`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                },
                 body: JSON.stringify(normalizedData),
             });
 

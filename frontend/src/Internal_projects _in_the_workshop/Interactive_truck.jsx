@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-const InteractiveTruck = () => {
+const InteractiveTruck = ({ selectedAreas, setSelectedAreas }) => {
   const [points, setPoints] = useState({
     frontal: [],
     trasera: [],
@@ -9,15 +9,49 @@ const InteractiveTruck = () => {
     derecho: [],
   });
 
+  // Sync initial and external changes from props
+  useEffect(() => {
+    if (
+      selectedAreas &&
+      typeof selectedAreas === "object" &&
+      !Array.isArray(selectedAreas)
+    ) {
+      setPoints((prev) => ({
+        frontal: Array.isArray(selectedAreas.frontal)
+          ? selectedAreas.frontal
+          : prev.frontal,
+        trasera: Array.isArray(selectedAreas.trasera)
+          ? selectedAreas.trasera
+          : prev.trasera,
+        superior: Array.isArray(selectedAreas.superior)
+          ? selectedAreas.superior
+          : prev.superior,
+        izquierdo: Array.isArray(selectedAreas.izquierdo)
+          ? selectedAreas.izquierdo
+          : prev.izquierdo,
+        derecho: Array.isArray(selectedAreas.derecho)
+          ? selectedAreas.derecho
+          : prev.derecho,
+      }));
+    }
+  }, [selectedAreas]);
+
   const handleClick = (e, areaId) => {
     const rect = e.target.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
 
-    setPoints((prev) => ({
-      ...prev,
-      [areaId]: [...prev[areaId], { x, y }],
-    }));
+    setPoints((prev) => {
+      const updated = {
+        ...prev,
+        [areaId]: [...prev[areaId], { x, y }],
+      };
+      // Bubble up to parent in the expected shape
+      if (typeof setSelectedAreas === "function") {
+        setSelectedAreas({ inspeccion: updated });
+      }
+      return updated;
+    });
   };
 
   const truckAreas = [
@@ -56,7 +90,6 @@ const InteractiveTruck = () => {
             onClick={(e) => handleClick(e, area.id)}
             className={`absolute ${area.style} border-2 border-transparent cursor-pointer`}
           >
-            {/* Renderizar puntos clickeados */}
             {points[area.id].map((point, idx) => (
               <div
                 key={idx}

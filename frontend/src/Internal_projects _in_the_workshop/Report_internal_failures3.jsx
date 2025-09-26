@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import InteractiveTruck2 from "./Interactive_truck2";
+import { normalizeFormData } from "../utils/normalizeFormData";
 
 export default function ReportInternalFailures3({ formData, onSubmit, onSave }) {
     const accesoriosList = [
@@ -37,7 +38,8 @@ export default function ReportInternalFailures3({ formData, onSubmit, onSave }) 
         })),
         observacion: formData.observacion || "",
         enderezar: formData.enderezar || "",
-        empleados: formData.empleados || [{ nombre: "", apellido: "", fechaInicio: "", fechaFin: "", horas: "" }]
+        empleados: formData.empleados || [{ nombre: "", apellido: "", fechaInicio: "", fechaFin: "", horas: "" }],
+        puntosCamion: formData.puntosCamion || {}
     });
 
     const [errors, setErrors] = useState({});
@@ -119,6 +121,14 @@ export default function ReportInternalFailures3({ formData, onSubmit, onSave }) 
         }));
     };
 
+    // Función para manejar los puntos del camión desde InteractiveTruck2
+    const handlePointsChange = (points) => {
+        setLocalData((prev) => ({
+            ...prev,
+            puntosCamion: points,
+        }));
+    };
+
 
     const validarCampos = () => {
         const nuevosErrores = {};
@@ -152,14 +162,16 @@ export default function ReportInternalFailures3({ formData, onSubmit, onSave }) 
             if (typeof onSave === "function") {
                 onSave(localData);
             }
-            return onSubmit();
             if (submitting) return; // evitar dobles clics
             setSubmitting(true);
-            const maybePromise = onSubmit();
-            if (maybePromise && typeof maybePromise.then === 'function') {
-                await maybePromise;
+            try {
+                const maybePromise = onSubmit(localData);
+                if (maybePromise && typeof maybePromise.then === 'function') {
+                    await maybePromise;
+                }
+            } finally {
+                setSubmitting(false);
             }
-            setSubmitting(false);
             return;
         }
 
@@ -167,7 +179,33 @@ export default function ReportInternalFailures3({ formData, onSubmit, onSave }) 
         try {
             if (submitting) return;
             setSubmitting(true);
-            const normalizedData = normalizeFormData(localData);
+            
+            // Estructurar los datos como el wizard para el endpoint /full
+            const payload = {
+                paso3: {
+                    cliente: localData.cliente,
+                    direccion: localData.direccion,
+                    color: localData.color,
+                    logo: localData.logo,
+                    placa: localData.placa,
+                    marca: localData.marca,
+                    tipo: localData.tipo,
+                    equipo: localData.equipo,
+                    fecha_ingreso: localData.fechaIngreso,
+                    fecha_salida: localData.fechaSalida,
+                    kil_inicial: Number(localData.kilInicial) || 0,
+                    kil_final: Number(localData.kilFinal) || 0,
+                    falla: localData.falla,
+                    trabajo_realizado: localData.trabajoRealizado,
+                    accesorios: localData.accesorios,
+                    repuestos: localData.repuestos,
+                    revision_bahias: localData.revisionData,
+                    observacion: localData.observacion,
+                    enderezar: localData.enderezar,
+                    empleados: localData.empleados,
+                },
+            };
+            
             const token = localStorage.getItem('authToken');
             const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/reportes-internos/full`, {
                 method: "POST",
@@ -175,13 +213,13 @@ export default function ReportInternalFailures3({ formData, onSubmit, onSave }) 
                     "Content-Type": "application/json",
                     ...(token ? { Authorization: `Bearer ${token}` } : {}),
                 },
-                body: JSON.stringify(normalizedData),
+                body: JSON.stringify(payload),
             });
 
             const data = await res.json();
             if (!res.ok) {
                 console.error("Errores de validación:", data.message);
-                console.error("Body enviado:", normalizedData);
+                console.error("Body enviado:", payload);
                 throw new Error("Error al enviar el reporte");
             }
             console.log("Respuesta del backend:", data);
@@ -354,7 +392,7 @@ export default function ReportInternalFailures3({ formData, onSubmit, onSave }) 
             {/* Camión */}
             <section className="flex justify-center">
                 <div className="w-full max-w-4xl flex justify-center">
-                    <InteractiveTruck2 />
+                    <InteractiveTruck2 onPointsChange={handlePointsChange} />
                 </div>
             </section>
 

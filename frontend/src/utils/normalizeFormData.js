@@ -23,26 +23,53 @@ export function normalizeFormData(formData) {
       }))
     : [];
 
+  // ✅ Empleados → JSON
+  const empleados = Array.isArray(formData.empleados)
+    ? formData.empleados.map((emp) => ({
+        nombre: emp.nombre || "",
+        apellido: emp.apellido || "",
+        fechaInicio: emp.fechaInicio || "",
+        fechaFin: emp.fechaFin || "",
+        horas: Number(emp.horas) || 0,
+      }))
+    : [];
+
   return {
-    cliente: formData.cliente,
-    direccion: formData.direccion,
-    color: formData.color,
-    logo: formData.logo,
-    placa: formData.placa,
-    fechaIngreso: formData.fechaIngreso 
-      ? new Date(formData.fechaIngreso).toISOString()
-      : null,
-    fechaEntrega: formData.fechaEntrega 
-      ? new Date(formData.fechaEntrega).toISOString()
-      : null,
-    supervisor: formData.supervisor,
-    encargado: formData.encargado,
+    // Campos básicos
+    cliente: formData.cliente || "",
+    direccion: formData.direccion || "",
+    color: formData.color || "",
+    logo: formData.logo || "",
+    placa: formData.placa || "",
+    marca: formData.marca || "",
+    tipo: formData.tipo || "",
+    equipo: formData.equipo || "",
+    
+    // Fechas
+    fechaIngreso: formData.fechaIngreso || "",
+    fechaSalida: formData.fechaSalida || "",
+    
+    // Kilometraje
+    kilInicial: Number(formData.kilInicial) || 0,
+    kilFinal: Number(formData.kilFinal) || 0,
+    
+    // Trabajo
+    falla: formData.falla || "",
+    trabajoRealizado: formData.trabajoRealizado || "",
+    
+    // Arrays y objetos complejos
+    accesorios: formData.accesorios || [],
+    repuestos: repuestos,
+    empleados: empleados,
+    revisionData: revision_bahias,
+    puntosCamion: formData.puntosCamion || {},
+    
+    // Observaciones
+    observacion: formData.observacion || "",
+    enderezar: formData.enderezar || "",
+    
+    // Campos adicionales para compatibilidad
     estado: formData.estado || "pendiente",
     id_empleado: formData.id_empleado || 1,
-    accesorios: formData.accesorios || [],
-    repuestos: formData.repuestos || [],
-    trabajos: formData.trabajos || [],
-    observaciones: formData.observaciones || "",
-    puntosCamion: formData.puntosCamion || [],
   };
 }

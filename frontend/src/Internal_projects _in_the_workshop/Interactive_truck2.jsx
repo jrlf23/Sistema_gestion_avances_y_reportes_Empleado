@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const InteractiveTruck2 = () => {
+const InteractiveTruck2 = ({ onPointsChange }) => {
   const [points, setPoints] = useState({
     frontal: [],
     trasera: [],
@@ -8,6 +8,13 @@ const InteractiveTruck2 = () => {
     izquierdo: [],
     derecho: [],
   });
+
+  // Notificar al componente padre cuando cambien los puntos
+  useEffect(() => {
+    if (onPointsChange) {
+      onPointsChange(points);
+    }
+  }, [points, onPointsChange]);
 
   const handleClick = (e, areaId) => {
     const rect = e.target.getBoundingClientRect();
